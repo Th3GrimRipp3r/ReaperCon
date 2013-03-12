@@ -15,7 +15,7 @@ on *:TEXT:!ReaperCon:#ReaperCon:{
   ReaperConFeed.Get !msg $chan
 }
 alias ReaperConFeed.Enable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
-alias ReaperConFeed.Disable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
+alias ReaperConFeed.Disable { .timerReaperConFeed.Check off }
 alias ReaperConFeed.Check { if ($me ison #ReaperCon) { ReaperConFeed.Get !msg #ReaperCon } }
 
 ; -------- Socket
@@ -57,7 +57,7 @@ on *:SOCKREAD:ReaperConFeed: {
   var %callback $hget(ReaperConFeed,Callback)
   var %file $hget(ReaperConFeed,File)
 
-  if ($sockerr) { %callback 04Socket Error in SOCKREAD - $sock($sockname).wserr -  $sock($sockname).wsmsg | .sockclose $sockname | halt }
+  if ($sockerr) { !echo -tsg 04Socket Error in SOCKREAD - $sock($sockname).wserr -  $sock($sockname).wsmsg | .sockclose $sockname | halt }
   ; .timerReaperConFeed off
 
   while ($sock($sockname).rq) {
