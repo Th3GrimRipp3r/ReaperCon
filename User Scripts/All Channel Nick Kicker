@@ -1,0 +1,9 @@
+alias kickall {
+  var %n = 1, %b = $comchan($$1,0)
+  while (%n <= %b) {
+    if ($me isop $comchan($$1,%n)) {
+      kick $comchan($$1,%n) $$1 $iif($2-,$2-,Mass Kick From All Channels Your In With Me!) 
+    }
+    inc %n 
+  }
+}
