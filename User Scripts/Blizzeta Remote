@@ -45,7 +45,6 @@ on *:quit: { !aline -hp @PartsJoins $fulldate 5User Quit: 00 $+ 12 $+ $nick (
  }
 
  ; This local alias sets the color for a given nick on all the common channels.
- ; 12 is the color number to use, change it if you want a different color.
  alias -l opercolor {
    var %t = $comchan($1,0), %c = 1
    while (%c <= %t) {
