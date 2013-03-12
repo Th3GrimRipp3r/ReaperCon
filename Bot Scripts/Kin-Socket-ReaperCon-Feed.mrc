@@ -1,6 +1,8 @@
 ; Kin's GitHub Feed for ReaperCon
 ; https://github.com/Th3GrimRipp3r/ReaperCon/commits/master.atom
 
+; 2013-03-12 v1.4 Sneakily extract the extended description from commit feed's <content> tag
+; 2013-03-12 v1.3 Minor fixes
 ; 2013-03-12 v1.2 HTML Entity handling
 ; 2013-03-12 v1.1 Added channel trigger and polling timer
 ; 2013-03-12 v1.0
@@ -78,6 +80,15 @@ alias -l ReaperConFeed.Close {
 
     %out = %out $Colorize(05,$Hash.GetData(%id,Name))
     %out = %out -> $Colorize(07,$left($Hash.GetData(%id,Title),208)) <-
+
+    ; Try to sneak the extended description from the commit into the output
+    if ($Hash.GetData(%id,Extended)) && ($len($Hash.GetData(%id,Extended)) > 5) {
+      var %max $calc(344 - $len(%out))
+      if (%max > 5) {
+        %out = %out $left($Hash.GetData(%id,Extended),%max)
+      }
+    }
+
     %out = %out $iif($Hash.GetData(%id,Updated),$+($chr(91),$v1,$chr(93)))
     %out = %out $iif($Hash.GetData(%id,Link),$left($v1,120))
 
@@ -100,7 +111,10 @@ alias ReaperConFeed.Parse {
   if ($regex(%data,/<title>([^<]*)<\/title>/)) { noop $Hash.SetData(%id,Title,$regml(1)) }
   if ($regex(%data,/<updated>([^<]*)<\/updated>/)) { noop $Hash.SetData(%id,Updated,$regml(1)) }
   if ($regex(%data,/<name>([^<]*)<\/name>/)) { noop $Hash.SetData(%id,Name,$regml(1)) | %bfound = $true }
-  ; if ($regex(%data,/<content>([^<]*)/m)) { noop $Hash.SetData(%id,Content,$regml(1)) }
+
+  ; Extended description inside <content ..> ?
+  var %content $Kin.Parser.Find(%file,> $+ $Hash.GetData(%id,Title),</content>)
+  if ($regex(%content,/(.*)&lt;\/pre>/)) { noop $Hash.SetData(%id,Extended,$remove($regml(1),> $+ $Hash.GetData(%id,Title))) }
 
   return %bfound
 }
