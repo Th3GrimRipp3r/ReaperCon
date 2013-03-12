@@ -1,6 +1,7 @@
 ; Kin's GitHub Feed for ReaperCon
 ; https://github.com/Th3GrimRipp3r/ReaperCon/commits/master.atom
 
+; 2013-03-12 v1.2 HTML Entity handling
 ; 2013-03-12 v1.1 Added channel trigger and polling timer
 ; 2013-03-12 v1.0
 
@@ -80,8 +81,10 @@ alias -l ReaperConFeed.Close {
     %out = %out $iif($Hash.GetData(%id,Updated),$+($chr(91),$v1,$chr(93)))
     %out = %out $iif($Hash.GetData(%id,Link),$left($v1,120))
 
-    set %ReaperConFeed.Last %out
-    if (%callback) { %callback %out }
+    if (%callback) && (%out != %ReaperConFeed.Last) {
+      %callback %out
+      set %ReaperConFeed.Last %out
+    }
   }
 
   ReaperConFeed.Timeout 
@@ -108,7 +111,7 @@ alias Colorize { return $iif($regex(color,$1,/^(0?\d|1[01-5])$/),$+($chr(03),$1,
 alias ReaperConTag { return $+($chr(40),$Colorize(06,ReaperCon),$chr(41)) }
 
 alias -l Hash.GetData { return $hget(ReaperConFeed,$+(Entry.,$1,.,$$2)) }
-alias -l Hash.SetData { hadd ReaperConFeed $+(Entry.,$1,.,$$2) $3- }
+alias -l Hash.SetData { hadd ReaperConFeed $+(Entry.,$1,.,$$2) $HTMLEntities($3-) }
 
 ;-------- Helper Aliases
 
@@ -144,4 +147,15 @@ alias -l Kin.Parser.Find {
 
   bunset &br
   return %output
+}
+
+alias -l HTMLEntities {
+  ; Handle possible double-encoded &amp;s before anything else
+  var %ent $replace($1-,&#038;,$chr(38),&#38;,$chr(38))
+  ; Common named entities
+  %ent = $replace(%ent,&quot;,$chr(34),&amp;,$chr(38),&lt;,$chr(60),&gt;,$chr(62),&nbsp;,$chr(160))
+  %ent = $replace(%ent,&pound;,$chr(163),&copy;,$chr(169),&reg;,$chr(174),&deg;,$chr(176),&plusmn;,$chr(177),&sup2;,$chr(178),&sup3;,$chr(179),&divide;,$chr(247),&#8217;,')
+  ; Global replace on remaining numerics
+  %ent = $regsubex(%ent,/&#(\d+);/g,$chr(\1))
+  return %ent
 }
