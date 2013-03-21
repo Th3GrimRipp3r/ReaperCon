@@ -21,11 +21,21 @@ alias cookies {
   else {
     if ($Cookini($1)) {
       writeini -n Cookies.ini Nicks $1 $calc($Cookread($1) + $2)
-      .timer 1 1 describe $active gives $1-2 $+($Cookword($2),.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      if ($left($2,1) != $chr(45)) {
+        .timer 1 1 describe $active gives $1-2 $+($Cookword($2),.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      }
+      else {
+        .timer 1 1 describe $active takes $remove($2,$chr(45)) $iif($remove($2,$chr(45)) == 1,cookie,cookies) from $+($1,.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      }
     }
     else {
       writeini Cookies.ini Nicks $1 $2
-      .timer 1 1 describe $active gives $1-2 $+($Cookword($2),.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      if ($left($2,1) != $chr(45)) {
+        .timer 1 1 describe $active gives $1-2 $+($Cookword($2),.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      }
+      else {
+        .timer 1 1 describe $active takes $remove($2,$chr(45)) $iif($remove($2,$chr(45)) == 1,cookie,cookies) from $+($1,.) $1 has received $Cookread($1) $+($Cookword($Cookread($1)),.)
+      }
     }
   }
 }
