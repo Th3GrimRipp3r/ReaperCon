@@ -57,6 +57,9 @@ sub power {
 			
 			my $me = Xchat::get_info('nick');	# Get our current nickname
 			my $netname = Xchat::get_info('network');	# Get the current network name
+			if (!defined($netname)) {
+				$netname = Xchat::get_info('server');
+			}
 			
 			## Count if we have owner|admin|op|halfop|voice on this channel ##
 			my $userinfo = Xchat::user_info();	# Get our user info on this channel
@@ -167,6 +170,9 @@ sub usermode {
 	# my $outvar = dump(@_);
 	if ($_[0][2] =~ m/o/) {
 		my $netname = Xchat::get_info('network');
+		if (!defined($netname)) {
+			$netname = Xchat::get_info('server');
+		}
 		if (!defined($netname)) { $netname = "default"; }
 		if ($_[0][1] =~ m/[+]/) {
 			if (!exists($OperNets{$netname})) {
