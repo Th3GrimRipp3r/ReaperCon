@@ -1,24 +1,32 @@
 ; Kin's GitHub Feed for ReaperCon
+; irc.GeekShed.net #ReaperCon
+
 ; https://github.com/Th3GrimRipp3r/ReaperCon/commits/master.atom
 
+; 2013-03-26 v1.6 Report the first file modified/added/removed for each commit
+; 2013-03-13 v1.5 Few touch-ups, improved HTTP headers
 ; 2013-03-12 v1.4 Sneakily extract the extended description from commit feed's <content> tag
 ; 2013-03-12 v1.3 Minor fixes
 ; 2013-03-12 v1.2 HTML Entity handling
 ; 2013-03-12 v1.1 Added channel trigger and polling timer
 ; 2013-03-12 v1.0
 
-; --------- Events
+; -------- Configuration
 
-on *:CONNECT:{ if ($network == GeekShed) { ReaperConFeed.Enable } }
-on *:DISCONNECT:{ if ($network == GeekShed) { ReaperConFeed.Disable } }
+alias -l MaxMessageLength { return 384 }
+
+; -------- Events
+
 on *:TEXT:!ReaperCon:#ReaperCon:{
   if ($nick !isop $chan) && ($nick !ishop $chan) { return }
   unset %ReaperConFeed.Last
   ReaperConFeed.Get !msg $chan
 }
-alias ReaperConFeed.Enable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
-alias ReaperConFeed.Disable { .timerReaperConFeed.Check off }
-alias ReaperConFeed.Check { if ($me ison #ReaperCon) { ReaperConFeed.Get !msg #ReaperCon } }
+on *:CONNECT:{ if ($network == GeekShed) { ReaperConFeed.Enable } }
+on *:DISCONNECT:{ if ($network == GeekShed) { ReaperConFeed.Disable } }
+alias -l ReaperConFeed.Enable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
+alias -l ReaperConFeed.Disable { .timerReaperConFeed.Check off }
+alias -l ReaperConFeed.Check { if ($me ison #ReaperCon) { ReaperConFeed.Get !msg #ReaperCon } }
 
 ; -------- Socket
 
@@ -34,7 +42,7 @@ alias ReaperConFeed.Get {
   hadd ReaperConFeed Callback %callback
   hadd ReaperConFeed File $qt($mIRCdir $+ ReaperConFeed. $+ $ctime $+ .dat)
 
-  .timerReaperConFeed 1 12 ReaperConFeed.Timeout 
+  .timerReaperConFeed 1 15 ReaperConFeed.Timeout 
   sockopen -e ReaperConFeed github.com 443
 }
 
@@ -51,8 +59,13 @@ alias -l ReaperConFeed.Timeout {
 on *:SOCKOPEN:ReaperConFeed: {
   var %host $hget(ReaperConFeed,Host), %path $hget(ReaperConFeed,Path)
 
-  sockwrite -nt $sockname GET %path HTTP/1.0
+  sockwrite -nt $sockname GET %path HTTP/1.1
   sockwrite -nt $sockname HOST: %host
+
+  sockwrite -nt $sockname Accept-Encoding: 
+  sockwrite -nt $sockname Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+  sockwrite -nt $sockname Connection: close
+
   sockwrite -nt $sockname $crlf
 }
 on *:SOCKREAD:ReaperConFeed: {
@@ -60,7 +73,6 @@ on *:SOCKREAD:ReaperConFeed: {
   var %file $hget(ReaperConFeed,File)
 
   if ($sockerr) { !echo -tsg 04Socket Error in SOCKREAD - $sock($sockname).wserr -  $sock($sockname).wsmsg | .sockclose $sockname | halt }
-  ; .timerReaperConFeed off
 
   while ($sock($sockname).rq) {
     ; sockread -fn $sock($sockname).rq &br
@@ -72,25 +84,34 @@ on *:SOCKREAD:ReaperConFeed: {
 on *:SOCKCLOSE:ReaperConFeed: { ReaperConFeed.Close }
 
 alias -l ReaperConFeed.Close {
+  .timerReaperConFeed off
+
   var %callback $hget(ReaperConFeed,Callback)
 
   var %id 1
   if ($ReaperConFeed.Parse(%callback,$hget(ReaperConFeed,File),%id) == $true) {
     var %out $ReaperConTag
+    var %link
 
     %out = %out $Colorize(05,$Hash.GetData(%id,Name))
+    if ($Hash.GetData(%id,Action)) && ($Hash.GetData(%id,Script)) {
+      %out = %out $Hash.GetData(%id,Action) 
+      %out = %out $Colorize(06,$Hash.GetData(%id,Script))
+    }
     %out = %out -> $Colorize(07,$left($Hash.GetData(%id,Title),208)) <-
+
+    %link = %link $iif($Hash.GetData(%id,Updated),$+($chr(91),$v1,$chr(93)))
+    %link = %link $iif($Hash.GetData(%id,Link),$left($v1,120))
 
     ; Try to sneak the extended description from the commit into the output
     if ($Hash.GetData(%id,Extended)) && ($len($Hash.GetData(%id,Extended)) > 5) {
-      var %max $calc(344 - $len(%out))
+      var %max $calc($MaxMessageLength - ($len(%out) + $len(%link)))
       if (%max > 5) {
-        %out = %out $left($Hash.GetData(%id,Extended),%max)
+        %out = %out $Colorize(03,$left($Hash.GetData(%id,Extended),%max))
       }
     }
 
-    %out = %out $iif($Hash.GetData(%id,Updated),$+($chr(91),$v1,$chr(93)))
-    %out = %out $iif($Hash.GetData(%id,Link),$left($v1,120))
+    %out = %out %link
 
     if (%callback) && (%out != %ReaperConFeed.Last) {
       %callback %out
@@ -115,6 +136,13 @@ alias ReaperConFeed.Parse {
   ; Extended description inside <content ..> ?
   var %content $Kin.Parser.Find(%file,> $+ $Hash.GetData(%id,Title),</content>)
   if ($regex(%content,/(.*)&lt;\/pre>/)) { noop $Hash.SetData(%id,Extended,$remove($regml(1),> $+ $Hash.GetData(%id,Title))) }
+
+  ; Find the first file modified
+  var %contentext $Kin.Parser.Find(%file,</author>,</content>)
+  if ($regex(%contentext,/<content type="html">\s+?&lt;pre>([m+-]) +(\S+.*?)(?=\s*\b[m+-]\b|\s*&lt;/pre>)/)) {
+    noop $Hash.SetData(%id,Action,$replace($regml(1),m,modified,+,added,-,removed))
+    noop $Hash.SetData(%id,Script,$regml(2))
+  }
 
   return %bfound
 }
@@ -170,6 +198,6 @@ alias -l HTMLEntities {
   %ent = $replace(%ent,&quot;,$chr(34),&amp;,$chr(38),&lt;,$chr(60),&gt;,$chr(62),&nbsp;,$chr(160))
   %ent = $replace(%ent,&pound;,$chr(163),&copy;,$chr(169),&reg;,$chr(174),&deg;,$chr(176),&plusmn;,$chr(177),&sup2;,$chr(178),&sup3;,$chr(179),&divide;,$chr(247),&#8217;,')
   ; Global replace on remaining numerics
-  %ent = $regsubex(%ent,/&#(\d+);/g,$chr(\1))
+  %ent = $regsubex(HTMLEntities,%ent,/&#(\d+);/g,$chr(\1))
   return %ent
 }
