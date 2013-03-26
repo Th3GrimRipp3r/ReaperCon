@@ -7,8 +7,10 @@ use strict;
 use warnings;
 # use Data::Dump qw(dump);
 
-my $version = "1.7";
+my $version = "1.9";
 
+# 2013-03-25 v1.9 Output formatting with sprintf
+# 2013-03-25 v1.8 Substitute server name for undefined network names
 # 2013-02-24 v1.7 Count network o-lines
 # 2013-02-24 v1.6 Use singluar or plural words properly in the output message
 # 2013-02-24 v1.5 Compare channel power with an integer assigned value returned from prefix2value
@@ -56,10 +58,7 @@ sub power {
 			Xchat::set_context("$chan");	# Set context for the following info commands to the chan
 			
 			my $me = Xchat::get_info('nick');	# Get our current nickname
-			my $netname = Xchat::get_info('network');	# Get the current network name
-			if (!defined($netname)) {
-				$netname = Xchat::get_info('server');
-			}
+			my $netname = getnetname();	# Get the current network name
 			
 			## Count if we have owner|admin|op|halfop|voice on this channel ##
 			my $userinfo = Xchat::user_info();	# Get our user info on this channel
@@ -114,13 +113,22 @@ sub power {
 	}
 				
 	Xchat::set_context("$startcontext");	# Return context to active window
-	
-	my $outmsg = "I am connected to ".&pluraltext($powercount{'network'},"network")." and joined to ".&pluraltext($powercount{'channel'},"channel").". ";
-	$outmsg .= "I have ".&olinecount.", ";
-	$outmsg .= &pluraltext($powercount{'owner'},"owner").", ".&pluraltext($powercount{'admin'},"admin").", ";
-	$outmsg .= &pluraltext($powercount{'op'},"op").", ".&pluraltext($powercount{'halfop'},"halfop")." and ".&pluraltext($powercount{'voice'},"voice").". ";
-	$outmsg .= "I have connection resetting power over $powercount{'kickable'} out of $powercount{'uniquenicks'} people. ";
-	$outmsg .= "If I did not check for repeat nicks, or my own nick, I would have assumed a total of $powercount{'user'} people. ";
+	my @outcounts = (	pluraltext($powercount{'network'},"network"),
+				pluraltext($powercount{'channel'},"channel"),
+				olinecount(),
+				pluraltext($powercount{'owner'},"owner"),
+				pluraltext($powercount{'admin'},"admin"),
+				pluraltext($powercount{'op'},"op"),
+				pluraltext($powercount{'halfop'},"halfop"),
+				pluraltext($powercount{'voice'},"voice"),
+				$powercount{'kickable'},
+				$powercount{'uniquenicks'},
+				$powercount{'user'}
+	);
+	my $outformat = "I am connected to %s and joined to %s. I have %s, %s, %s, %s, %s and %s. ";
+	$outformat .= "I have connection resetting power over %s out of %s people. ";
+	$outformat .= "If I did not check for repeat nicks, or my own nick, I would have assumed a total of %s people.";
+	my $outmsg = sprintf($outformat, @outcounts);
 	Xchat::command("say $outmsg");
 
 	return Xchat::EAT_ALL;	# Tell XChat we handled the command fully
@@ -160,6 +168,14 @@ sub pluraltext {
 	}
 }
 
+sub getnetname {
+	my $strnet = Xchat::get_info('network');
+	if (!defined($strnet)) {
+		$strnet = Xchat::get_info('server');
+	}
+	return $strnet;
+}
+
 ## Count o-lines ##
 my %OperNets;
 
@@ -169,10 +185,7 @@ Xchat::hook_print("Channel Mode Generic", \&usermode );
 sub usermode {
 	# my $outvar = dump(@_);
 	if ($_[0][2] =~ m/o/) {
-		my $netname = Xchat::get_info('network');
-		if (!defined($netname)) {
-			$netname = Xchat::get_info('server');
-		}
+		my $netname = getnetname();
 		if (!defined($netname)) { $netname = "default"; }
 		if ($_[0][1] =~ m/[+]/) {
 			if (!exists($OperNets{$netname})) {
