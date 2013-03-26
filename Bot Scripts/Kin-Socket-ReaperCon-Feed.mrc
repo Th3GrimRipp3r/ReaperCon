@@ -139,7 +139,7 @@ alias ReaperConFeed.Parse {
 
   ; Find the first file modified
   var %contentext $Kin.Parser.Find(%file,</author>,</content>)
-  if ($regex(%contentext,/<content type="html">\s+?&lt;pre>([m+-]) +(\S+.*?)(?=\s*\b[m+-]\b|\s*&lt;/pre>)/)) {
+  if ($regex(%contentext,/<content type="html">\s+?&lt;pre>([m+-]) +(\S+.*?)(?=\s+[m+-]\s+|\s*&lt;/pre>)/)) {
     noop $Hash.SetData(%id,Action,$replace($regml(1),m,modified,+,added,-,removed))
     noop $Hash.SetData(%id,Script,$regml(2))
   }
