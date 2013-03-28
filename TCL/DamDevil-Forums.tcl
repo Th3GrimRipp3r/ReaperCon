@@ -36,7 +36,7 @@ proc DD:Forums {nick host hand chan argv} {
 		  return 0
 		}
       }
-	}
+    }
   }
 }
 	
