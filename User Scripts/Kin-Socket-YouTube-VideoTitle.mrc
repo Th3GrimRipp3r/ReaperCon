@@ -7,7 +7,7 @@
 
 ; --------- Events
 
-on *:TEXT:*:*:{
+on *:TEXT:*:#:{
   ; Skip if already busy looking up a video
   if ($sock(Kin.YouTubeID.GetTitle)) { return } 
 
