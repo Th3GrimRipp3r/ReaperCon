@@ -20,19 +20,28 @@ on *:TEXT:!bsreqhelp:#:{
 
 
 Notes:
-!brequest <Nick> <Ident> <Host> <Realname> to request a BotServ bot
+!brequest <Nick> <Ident> <Host> <Realname> to request a BotServ bot, as noted above.
 Tickets
 - Sent to #BotServ-req "Ticket <generated number> has been created type !bread <generated number> for more info.
 - Ticket information would show up in a PM, whether triggered in channel or in a PM.
-- Can be numbered one to infinity to be labeled as a date.
+- Can be numbered one to infinity or be labeled as a date.
 Netadmins would have the following commands:
 - !bassign <oper nick> <ticket> <-- Allows us to assign tickets to other staff
 Opers would have the following commands:
 - !basssign <ticket> <-- Assigns ticket to self
 - !bread <ticket> <-- Allows any ticket to be read.
 - !bfinish <ticket> <-- Completes ticket (Can only be done by assigned person or netadmins)
+- !bstatus <status> <ticket> <-- Changes the status of the ticket.
+Security - Authentication can be one or more of the following
+- Password authentication
+- Oper verification (Scans /whois for Oper insignia)
+- Pin authentication (Could be used for limited sessions)
+Logged events
+- Successful/Failed authentication (Dependent on which authentication method is chosen)
+- Completed tickets (Logged to a separate file)
 
 
+How the Ticket will be Displayed:
 ---BotServ Request Ticket #<number>---------
 Requested by: $nick
 Date: <Date the request was entered>
