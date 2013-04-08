@@ -5,8 +5,8 @@
 :: All Rights Reserved          ::
 ::::::::::::::::::::::::::::::::::
 
-on *:TEXT:!bsreqhelp:#:{
-  if ($chan == #bots) {
+on $*:TEXT:/^!b(sreqhelp|request|assign|read|finish|status)( |$)/Si:#CHANNELHERE:{
+  if ($regml(1) == sreqhelp) {
     .timer 1 1 msg $chan $nick $+ , please wait while a list of instructions are PM'd to you...
     .timer 1 3 msg $nick Please use the following syntax to request a BotServ bot:
     .timer 1 5 msg $nick !brequest <Nick> <Ident> <Host> <Realname>
@@ -14,6 +14,12 @@ on *:TEXT:!bsreqhelp:#:{
     .timer 1 9 msg $nick Replace <Ident> with the ident you want your BotServ bot to have,
     .timer 1 11 msg $nick Replace <Host> with the desired host you want your BotServ bot to have,
     .timer 1 13 msg $nick Finally, replace <Realname> with a real name for your BotServ bot.
+  }
+  elseif ($regml(1) == request) {
+    if (!$2) || (!$3) || (!$4) || (!$5) { msg $chan * ERROR: Incorrect Syntax.. !brequest <Nick> <Ident> <Host> <Realname> }
+    else {
+      Something goez here.. But my head is starting to hurtz D:
+    }
   }
 }
 
