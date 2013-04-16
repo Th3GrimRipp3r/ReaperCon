@@ -42,3 +42,29 @@ dialog BF3_Stats {
 on *:DIALOG:BF3_Stats:init:*: {
   didtok $dname 4 124 PC|Xbox 360|Playstation 3
 }
+on *:DIALOG:BF3_Stats:sclick:6: {
+  if ($did(5) == $null) && ($istok(PC|Xbox 360|Playstation 3,$did(4).seltext,124)) { noop $input(Please enter a Username to Search for..,o,Error!) }
+  elseif ($did(5) != $null) && (!$istok(PC|Xbox 360|Playstation 3,$did(4).seltext,124)) { noop $input(Please select a Platform from the Drop Down..,o,Error!) }
+  elseif ($did(5) == $null) && (!$istok(PC|Xbox 360|Playstation 3,$did(4).seltext,124)) { noop $input(Please select a Platform and Enter a Username.,o,Error!) }
+  else {
+    var %a = $+(/stats_,$iif($did(4).seltext == PC,PC,$iif($did(4).seltext == Xbox 360,360,PS3)),$did(5))
+    sockopen BF3_Stats bf3stats.com 80
+    sockmark BF3_Stats %a did -ra $dname
+  }
+}
+on *:SOCKOPEN:BF3_Stats: {
+  tokenize 32 $sock(BF3_Stats).mark
+  if ($sockerr) { noop $input(There was an Error connecting to BF3Stats.com..,o,Error!) }
+  else {
+    var %a = sockwrite -nt $sockname
+    %a GET $1 HTTP/1.0
+    %a Host: $sock(BF3_Stats).addr
+    %a User-Agent: Opera 9.3
+    %a $crlf
+  }
+}
+on *:SOCKREAD:BF3_Stats: {
+  tokenize 32 $sock(BF3_Stats).mark
+  var %BF3_Stats | sockread %BF3_Stats
+  if ($regex(%BF3_Stats,/<dt>Rank<\/dt><dd>(.*?)<\/dd>/Si)) { $2- 20 $regml(1) }
+}
