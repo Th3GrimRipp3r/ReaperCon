@@ -27,7 +27,7 @@ alias -l BitLYCheck.Found {
   if (%BitLYCheck.Title) && (%BitLYCheck.LongURL) {
     .timerBitLYCheckTimeout off
     .sockclose BitLYCheck
-    %callback $+(bit.ly/,%hash) => %BitLYCheck.LongURL $iif(%BitLYCheck.Title != no title,$+(",%BitLYCheck.Title,"))
+    %callback 11(4Bit.ly11) $+(bit.ly/,%hash) => %BitLYCheck.LongURL $iif(%BitLYCheck.Title != no title,$+(",%BitLYCheck.Title,"))
     unset %BitLYCheck.*
   }
 }
