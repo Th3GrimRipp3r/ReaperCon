@@ -1,15 +1,15 @@
 ; Kin's GZLine a Nickname by IP Address
-; irc.GeekShed.net #Reapercon
+; irc.GeekShed.net #ReaperCon
 ; Hosted at https://github.com/Th3GrimRipp3r/ReaperCon
-
-; GZline a nickname by it's IP address
-;   - Can handle more than 1 nickname waiting for a userIP response from server
-;     good if multiple nicknames need to be corrected all at once
 
 ; Usage: /GZLineNickByIP nick
 
+; GZline a nickname by it's IP address
+;   - Able to wait for a userIP response from server for more than one nick;
+;     Good if multiple nicknames need to be corrected all at once, or there is server lag.
+
 ; 2013-08-13 v1.3 Fix $remtok bug
-; 2013-08-13 v1.2 Check if the same nick is already waiting, to keep from spamming /userip unnecessarially
+; 2013-08-13 v1.2 Check for repeated nicknames, to keep from flooding userip unnecessarially
 ; 2013-08-13 v1.1 Add timeout timer if there is too much lag
 
 ; ----- Config
@@ -22,16 +22,14 @@ alias -l GZLineNickByIP.GZLine.Reason { return Unconducive behavior. GZlined for
 
 alias GZLineNickByIP {
   var %nick $1
-  var %skip $false
-
-  if ($istok(%GZLineNickByIP,%nick,32)) { %skip = $true }
-  set -e %GZLineNickByIP $addtok(%GZLineNickByIP,%nick,32)
 
   .enable #GZLineNickByIP
   .timerGZLineNickByIP 1 $GZLineNickByIP.Timeout GZLineNickByIPTimeout
 
-  if (%skip = $true) { return }
-  !userip %nick
+  if (!$istok(%GZLineNickByIP,%nick,32)) {
+    set -e %GZLineNickByIP $addtok(%GZLineNickByIP,%nick,32)
+    !userip %nick
+  }
 }
 
 ; ---- Events
