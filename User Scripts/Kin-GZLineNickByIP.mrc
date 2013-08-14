@@ -1,3 +1,7 @@
+; Kin's GZLine a Nickname by IP Address
+; irc.GeekShed.net #Reapercon
+; Hosted at https://github.com/Th3GrimRipp3r/ReaperCon
+
 ; GZline a nickname by it's IP address
 ;   - Can handle more than 1 nickname waiting for a userIP response from server
 ;     good if multiple nicknames need to be corrected all at once
@@ -12,7 +16,7 @@
 
 alias -l GZLineNickByIP.Timeout { return 18 }
 alias -l GZLineNickByIP.GZLine.Length { return 1d }
-alias -l GZLineNickByIP.GZLine.Reason { return Mass nick highlight detected, GZlined for 1 day. }
+alias -l GZLineNickByIP.GZLine.Reason { return Unconducive behavior. GZlined for 1 day. }
 
 ; ----- Alias
 
