@@ -16,8 +16,13 @@
 ;   /scroller
 ;       - Stops the scrolling and remove the text from the toolbar
 ;
-; + Clicking on the scrolling text reverses the scroll direction
+; + Click the scrolling text to reverse the scroll direction
+;
+; /noop $scroller().reverse - Reverses scroll direction
+; /noop $scroller().bounce - Toggles bouncing
 ; ----------------------------------------------------------------
+; 2013-09-07 v1.8 Bugfix: Enforce picture window min/max
+; 2013-09-07 v1.7 High res timer, toolbar on/off, .reverse .bounce
 ; 2013-09-07 v1.6 Match-up offset to visually match loop
 ; 2013-09-05 v1.5 Use one buffer, and negative drawtext offset
 ; 2013-09-04 v1.4 Add Scroll Bouncing option
@@ -29,38 +34,58 @@
 
 ; --------- Configuration
 
-alias Kin.Scroller.Increment { return -8 }
+alias -l Kin.Scroller.Bounce { return $true }
+; ^ Scroll continuously, or bounce back and forth?
+
+alias -l Kin.Scroller.Increment { return -1 }
 ; ^ How far to scroll (in pixels) for each scrolling update
 ; -- Negative amount: Begin by scrolling left
 ; -- Positive amount: Begin by scrolling right
 
-alias Kin.Scroller.Bounce { return $false }
-; ^ Scroll continuously, or bounce back and forth?
+alias -l Kin.Scroller.Milliseconds { return 80 }
+; ^ How many milliseconds between animation updates
+; -- Use a value no less than 30
 
-alias Kin.Scroller.WidthLimit { return 256 }
-alias Kin.Scroller.HeightLimit { return 19 }
-; ^ Maximum toolbar width and height (in pixels)
+alias -l Kin.Scroller.WidthLimit { return 128 }
+alias -l Kin.Scroller.HeightLimit { return 16 }
+; ^ Maximum toolbar width and height in pixels
+; -- (Minimum 16 pixels, maximum 256 pixels)
 
-alias Kin.Scroller.Margin { return 6 }
+alias -l Kin.Scroller.Margin { return 6 }
 ; ^ Margin on the left and right side of the toolbar button
 
-alias Kin.Scroller.Spacing { return 12 }
+alias -l Kin.Scroller.Spacing { return 12 }
 ; ^ Extra space between loops
 
-alias Kin.Scroller.BackgroundColor { return 12 }
+alias -l Kin.Scroller.BackgroundColor { return 12 }
 ; ^ Toolbar background color
 
-alias Kin.Scroller.Font { return Arial }
-alias Kin.Scroller.Size { return 18 }
-alias Kin.Scroller.TextColor { return 8 }
-; ^ Font for text, and "base" color (ctrl-K/I/B codes in the string will still work)
+alias -l Kin.Scroller.Font { return "Arial" }
+; ^ Font for text. e.g. "Arial" "Arial Rounded MT Bold" "Comic Sans MS" "Times New Roman" "Verdana" ect.
+alias -l Kin.Scroller.FontSize { return 14 }
+; ^ Font size
+alias -l Kin.Scroller.TextColor { return 8 }
+; ^ "Base" color for font (ctrl-K/I/B codes can change colors within the string)
 
-alias Kin.Scroller.Tooltip { return Now_Playing }
-; ^ Tooltip (must be one word) for the toolbar button
+alias -l Kin.Scroller.Tooltip { return "Now Playing" }
+; ^ Tooltip for the toolbar button
 
 ; --------- Alias
 
 alias Scroller {
+  ; Scroller methods to toggle bouncing and scroll direction
+  if ($isid) && ($prop) {
+    if ($prop == reverse) {
+      if (%Kin.Scroller.ScrollLeft) { set -e %Kin.Scroller.ScrollLeft $false }
+      else { set -e %Kin.Scroller.ScrollLeft $true }
+    }
+    if ($prop == bounce) { 
+      if (%Kin.Scroller.Bounce) { set -e %Kin.Scroller.Bounce $false }
+      else { set -e %Kin.Scroller.Bounce $true }
+    }
+    return
+  }
+
   Kin.Scroller.Stop
 
   ; Use /Scroller with no parameter to turn off the scroll and remove the button
@@ -71,31 +96,35 @@ alias Scroller {
 
   ; Draw Text in Toolbar, and begin scrolling if too large to fit
   if ($Kin.Scroller.DrawText(%Kin.Scroller.Position)) {
+    if (!$toolbar) {
+      set -e %Kin.Scroller.ToolBarOff $true
+      .toolbar on
+    }
     set -e %Kin.Scroller.Increment $abs($Kin.Scroller.Increment)
     set -e %Kin.Scroller.ScrollLeft $iif($Kin.Scroller.Increment > 0,$false,$true)
     set -e %Kin.Scroller.Bounce $Kin.Scroller.Bounce
 
-    .timerKin.Scroller.Update 0 1 Kin.Scroller.Move 
+    .timerKin.Scroller.Update -mo 0 $iif($Kin.Scroller.Milliseconds isnum 30-3000,$v1,80) Kin.Scroller.Move 
   }
 }
 
 ; -------- Drawing Alias
 
-alias Kin.Scroller.DrawText {
+alias -l Kin.Scroller.DrawText {
   var %pos $1
   var %text $iif($2,$2-,%Kin.Scroller.String) $+ $chr(160)
   var %bneedstoscroll $false
 
   ; ---- Determine text size
-  var %textwidth $width(%text,$Kin.Scroller.Font,$Kin.Scroller.Size,0,1)
-  var %textheight $height(%text,$Kin.Scroller.Font,$Kin.Scroller.Size)
+  var %textwidth $width(%text,$Kin.Scroller.Font,$Kin.Scroller.FontSize,0,1)
+  var %textheight $height(%text,$Kin.Scroller.Font,$Kin.Scroller.FontSize)
 
   ; ---- Create picture window as a drawing buffer for the toolbar
   var %margin $Kin.Scroller.Margin
-  var %viewheight $iif(%textheight > $Kin.Scroller.HeightLimit,$Kin.Scroller.HeightLimit,%textheight)
+  var %viewheight $iif(%textheight > $Kin.Scroller.SizeLimit($Kin.Scroller.HeightLimit),$Kin.Scroller.SizeLimit($Kin.Scroller.HeightLimit),%textheight)
   var %toolbarheight = %viewheight 
 
-  if ($calc(%textwidth + (%margin * 2)) <= $Kin.Scroller.WidthLimit) {
+  if ($calc(%textwidth + (%margin * 2)) <= $Kin.Scroller.SizeLimit($Kin.Scroller.WidthLimit)) {
     ; Text is short enough to fit without scrolling
     var %viewwidth %textwidth
     var %toolbarwidth $v1
@@ -105,10 +134,14 @@ alias Kin.Scroller.DrawText {
     var %viewwidth %textwidth
     dec %viewwidth %margin
     dec %viewwidth %margin
-    var %toolbarwidth $Kin.Scroller.WidthLimit
+    var %toolbarwidth $Kin.Scroller.SizeLimit($Kin.Scroller.WidthLimit)
 
     %bneedstoscroll = $true
   }
+
+  ; Enforce picture window limits
+  %toolbarheight = $Kin.Scroller.SizeLimit(%toolbarheight)
+  %toolbarwidth = $Kin.Scroller.SizeLimit(%toolbarwidth)
 
   if (!$window($Kin.Scroller.ToolbarBuffer)) { 
     window -hp +d $Kin.Scroller.ToolbarBuffer 64 64 $calc(%toolbarwidth + $Kin.Scroller.BorderSize) $calc(%toolbarheight + $Kin.Scroller.BorderSize)
@@ -120,7 +153,7 @@ alias Kin.Scroller.DrawText {
 
   ; Draw Text
   var %textpos $calc(%margin + $Kin.Scroller.XOffset + %pos)
-  drawtext -npb $Kin.Scroller.ToolbarBuffer $Kin.Scroller.TextColor $Kin.Scroller.BackgroundColor $Kin.Scroller.Font $Kin.Scroller.Size %textpos $Kin.Scroller.YOffset %text
+  drawtext -npb $Kin.Scroller.ToolbarBuffer $Kin.Scroller.TextColor $Kin.Scroller.BackgroundColor $Kin.Scroller.Font $Kin.Scroller.FontSize $calc(%textpos + $Kin.Scroller.XOffset) $Kin.Scroller.YOffset %text
 
   ; Draw second copy of text if continuously looping
   if (!%Kin.Scroller.Bounce) {
@@ -132,7 +165,7 @@ alias Kin.Scroller.DrawText {
       inc %textpos %textwidth
       inc %textpos $Kin.Scroller.Spacing
     }
-    drawtext -npb $Kin.Scroller.ToolbarBuffer $Kin.Scroller.TextColor $Kin.Scroller.BackgroundColor $Kin.Scroller.Font $Kin.Scroller.Size %textpos $Kin.Scroller.YOffset %text
+    drawtext -npb $Kin.Scroller.ToolbarBuffer $Kin.Scroller.TextColor $Kin.Scroller.BackgroundColor $Kin.Scroller.Font $Kin.Scroller.FontSize %textpos $Kin.Scroller.YOffset %text
   }
 
   ; Clear Margins
@@ -152,13 +185,21 @@ alias Kin.Scroller.DrawText {
 
 ; -------- Support Aliases
 
-alias Kin.Scroller.Move {
+alias -l Kin.Scroller.SizeLimit {
+  ; mIRC limits on the size of picture windows for use with the toolbar
+  if ($1 < 16) { return 16 }
+  elseif ($1 > 256) { return 256 }
+  elseif ($1 !isnum) { return 36 }
+  else { return $1 }
+}
+
+alias -l Kin.Scroller.Move {
   var %pos $iif(%Kin.Scroller.Position,$v1,0)
   var %inc $iif(%Kin.Scroller.Increment,$v1,$Kin.Scroller.Increment)
   var %left %Kin.Scroller.ScrollLeft
   var %bbounce %Kin.Scroller.Bounce
 
-  var %max $width(%Kin.Scroller.String,$Kin.Scroller.Font,$Kin.Scroller.Size,0,1)
+  var %max $width(%Kin.Scroller.String,$Kin.Scroller.Font,$Kin.Scroller.FontSize,0,1)
   inc %max $Kin.Scroller.MatchupOffset
 
   ; Move
@@ -178,13 +219,13 @@ alias Kin.Scroller.Move {
   ; Bouncing motion
   else {
     ; How much hidden text is there when bouncing between left and right
-    dec %max $Kin.Scroller.WidthLimit
+    dec %max $Kin.Scroller.SizeLimit($Kin.Scroller.WidthLimit)
     inc %max $Kin.Scroller.Margin
     inc %max $Kin.Scroller.Margin
 
     ; Bounce
     if (%pos < $calc(0 - %max)) || (%pos >= 0) {
-      Kin.Scroller.Reverse 
+      noop $Scroller().reverse
       %pos = $calc(0 - (%max + (%pos % %max)) % %max))
     }
   }
@@ -197,18 +238,14 @@ alias -l Kin.Scroller.Stop {
   ; Clear previous buffer and button
   if ($window($Kin.Scroller.ToolbarBuffer)) { window -c $Kin.Scroller.ToolbarBuffer }
   if ($toolbar($Kin.Scroller.ToolbarName)) { toolbar -d $Kin.Scroller.ToolbarName }
+  if (%Kin.Scroller.ToolBarOff) { .toolbar off } 
   .timerKin.Scroller.Update off
   unset %Kin.Scroller.*
 }
 
-alias Kin.Scroller.Reverse {
-  if (%Kin.Scroller.ScrollLeft) { set -e %Kin.Scroller.ScrollLeft $false }
-  else { set -e %Kin.Scroller.ScrollLeft $true }
-}
-
-alias Kin.Scroller.Click {
+alias -l Kin.Scroller.Click {
   ; Switch the direction of the scroll when the toolbar is clicked
-  Kin.Scroller.Reverse
+  noop $scroller().reverse
 }
 
 ; -------- Support Configuration
