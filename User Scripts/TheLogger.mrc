@@ -9,9 +9,14 @@
 ; As ComChannels Are Detected they are logged via Network\Channel\Nick\ComCHannels
 ; Each window can be chosen at your leisure to right click on and choose to log or not
 ; As well you can right click on each window and choose to set the timestamp or not
-; Version 2.0 TheLogger.mrc
-
+; Version 2.1 TheLogger.mrc
+;#######################################################################################
 on *:start: {
+  ; If you have some nicks you don't want to log on every time they call your nicks
+  ; use the pattern(s) below to stop them on channel text and action for the HighLight Log
+  set -e %hinick Cindy` Cindy Chillsy 
+  ;#######
+
   .timer 1 1 window -De[2]k[0]m @HighLights 
   .timer 1 2 window -De[2]k[0]m @Notice
   .timer 1 4 window -De[2]k[0]m @Bans
@@ -19,7 +24,6 @@ on *:start: {
   .timer 1 8 window -De[2]k[0]m @Quits
   .timer 1 10 window -De[2]k[0]m @Clones
   .timer 1 12 window -De[2]k[0]m @ComChan
-
 }
 
 ;Start Who Banned - Quit - Kick Logger ---
@@ -52,13 +56,9 @@ on *:BAN:#:{
   unset %whoBanned.*
 }
 ;End Who Banned - Quit - Kick Logger ---
-
 ;Start Highlight Logger ----
 on *:text:*:#: {
-  if ($nick == Chillsy) { halt }
-  if ($nick == Cindy) { halt }
-  if ($nick == Cindy`) { halt }
-
+  if ($istok(%hinick,$nick,32)) { halt }
   if ($highlight($1- $lf)) && !$($+(%,highlightflood,.,$nick),2) {
     set -u10 $+(%,highlightflood,.,$nick) on
     window -De[2]k[0]m @highlights
@@ -66,19 +66,14 @@ on *:text:*:#: {
   }
 }
 on *:action:*:#: {
-  if ($nick == Cindy) { halt }
-  if ($nick == Cindy`) { halt }
-
-
+  if ($istok(%hinick,$nick,32)) { halt }
   if ($highlight($1- $lf)) && !$($+(%,highlightflood,.,$nick),2) {
     set -u10 $+(%,highlightflood,.,$nick) on
     window -De[2]k[0]m @highlights
     echo @highlights $timestamp 9,1 $network --- $nick  has taken action on you in 7,1 # 9,1 $nick : ------7,1 $1- 
   }
 }
-
 ;End Highlight Logger ----
-
 ;Start Notice Logger ---
 on $*:NOTICE:/(.+)/Si:*:{
   var %note = 1
@@ -100,32 +95,26 @@ on $*:NOTICE:/(.+)/Si:*:{
 
 ;Start Clone Logger ---
 on *:Join:#: {
-  ; Remark out the next two lines if you want the network ops of those servers showing
+  ; Remark out the next two lines if you want the network ops 
+  ; of those servers showing as clones of each other or change to 
+  ; match the network you want to not show as clones
   if (($address($nick,2) = *!*@geekshed.net)) halt
   if (($address($nick,2) = *!*@ipocalypse.net)) halt
-  ; echo -s test
+  ;#########
   var %host_to_search_for = $address($nick,2)
   var %number_from_that_host = $ialchan(%host_to_search_for,$chan,0)
-  ; echo -s test2
   if (%number_from_that_host > 1) {
-    ;we have clones!
-    ;first set up our vars and loop
     var %count = 0
     unset %clones
     :loop
     inc %count
-    ;loop through every nick, adding the nicks to %clones
     var %clones = %clones $ialchan(%host_to_search_for,$chan,%count).nick
     if (%count < %number_from_that_host) { goto loop }
     echo -t $chan 8(Clones Detected) 0 %count 7Clones From 8 $address($nick,2) [[ %clones ]]  
     window -De[2]k[0]m @Clones
     echo @Clones $timestamp $network $chan 8(Clones Detected) 0 %count 7Clones From 8 $address($nick,2) [[ %clones ]]  
-    ; echo -s test final
     goto comchan
   }
-
-
-
   ;End Clone Logger ------
   ;Start ComChannel Logger
   ;
@@ -157,9 +146,7 @@ menu channel,menubar,nicklist,channel {
   .ComChan $1:/com $1
   .ComChan ?Nick:/com $input(Enter Nick you want to check for Common Channels,e,Common Channels Check)
 }
-
 alias com {
-
   if ($1 == $me) { halt }
   else {
     unset %lo12
@@ -175,7 +162,7 @@ alias com {
     echo -nmr $chan 9,1 $1  is in the following common channels:9,1 $replace(%lo12,$chr(44),$chr(32))
 
     /*
-    You can turn off the next two lines if you want to have the common channels 
+    You can turn on the next two lines if you want to have the common channels 
     logged when you use the menu to check a nick by removing the semicolon in front of the lines (;) 
     */
     ; window -De[2]k[0]m @comchan
@@ -183,6 +170,4 @@ alias com {
   }
 }
 ;End ComChannel Logger
-
-ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.0 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) 
-; window -De[2]k[0]m @Quits
+ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.1 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) 
