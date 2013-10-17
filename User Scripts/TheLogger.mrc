@@ -1,45 +1,25 @@
-; Version 1.2 Who banned script by Phil
-; and the concept of Cheiron's Kick and Ban logger combined and 
-; Modified by Tom Wilson
-; This script notifies you which users a ban affects when one is set
-; 
-; Modified to open two windows @bans and @kicks to track time and such
-; After first kick and ban, right click on those new windows and turn logging on
-; If researching a kick or ban, look at the time stamp and search to that time
-; in the room that logged it
-####
-; Highlight Logger by TomCoyote Version 1.2
-; Go to your Address Book, Click on Highlight Tab
-; Add, then put the nicks you want to Log into one line
-; Separated by a comma (,) as in Nick1,Nick2,Nick3,$me
-; and it will work regardless if Enable Highlight 
-; box is Checkmarked or not.
-; After first highlight has been recorded, a new window
-; will open called @highlights, Right click on the window
-; tab and choose LOG (on) if you want to keep a record
-####
-; TomCoyote NoticeLogger v.1.2
-; collaborated on this script <Danneh>
-; This is to help track where those 
-; pesky notices come from if you are in
-; multiple rooms/servers
-####
-; Clone Logger by TomCoyote
-; This version opens a separate window to track 
-; clones. Thus if needed you can search them easily.
-; you can right click on the Clone window it 
-; opens and choose to Log
-; the results if needed
-####
-
+; TheLogger By TomCoyote ( Tom Coyote Wilson aka Coyote` on Geekshed.net IRC network )
+; This script opens 7 windows (Highlights\Notice\Bans\Kicks\Quits\Clones\ComChan)
+; As you are Highlighted in channels that action is logged via Network\Channel\User
+; As you are Noticed on a network that action is logged via Network\Common Channels
+; As a Ban happens it is logged via Banned\Hostmask\Channel\Network\Banner\Reason
+; As a Kick happens it is logged via Kick\Channel\Network\Kicker\Reason
+; As a Quit happens it is logged via Quit\Message\Nick\Host\Network
+; As Clones detected they are logged via Network\Host\Channel\Nicks
+; As ComChannels Are Detected they are logged via Network\Channel\Nick\ComCHannels
+; Each window can be chosen at your leisure to right click on and choose to log or not
+; As well you can right click on each window and choose to set the timestamp or not
+; Version 2.0 TheLogger.mrc
 
 on *:start: {
-  .timer 1 8 window -De[2]k[0]m @Clones
-  .timer 1 6 window -De[2]k[0]m @Quits
-  .timer 1 5 window -De[2]k[0]m @bans
-  .timer 1 4 window -De[2]k[0]m @kicks
-  .timer 1 3 window -De[2]k[0]m @notice
-  .timer 1 2 window -De[2]k[0]m @highlights
+  .timer 1 1 window -De[2]k[0]m @HighLights 
+  .timer 1 2 window -De[2]k[0]m @Notice
+  .timer 1 4 window -De[2]k[0]m @Bans
+  .timer 1 5 window -De[2]k[0]m @Kicks
+  .timer 1 8 window -De[2]k[0]m @Quits
+  .timer 1 10 window -De[2]k[0]m @Clones
+  .timer 1 12 window -De[2]k[0]m @ComChan
+
 }
 
 ;Start Who Banned - Quit - Kick Logger ---
@@ -76,6 +56,9 @@ on *:BAN:#:{
 ;Start Highlight Logger ----
 on *:text:*:#: {
   if ($nick == Chillsy) { halt }
+  if ($nick == Cindy) { halt }
+  if ($nick == Cindy`) { halt }
+
   if ($highlight($1- $lf)) && !$($+(%,highlightflood,.,$nick),2) {
     set -u10 $+(%,highlightflood,.,$nick) on
     window -De[2]k[0]m @highlights
@@ -83,6 +66,10 @@ on *:text:*:#: {
   }
 }
 on *:action:*:#: {
+  if ($nick == Cindy) { halt }
+  if ($nick == Cindy`) { halt }
+
+
   if ($highlight($1- $lf)) && !$($+(%,highlightflood,.,$nick),2) {
     set -u10 $+(%,highlightflood,.,$nick) on
     window -De[2]k[0]m @highlights
@@ -134,11 +121,68 @@ on *:Join:#: {
     window -De[2]k[0]m @Clones
     echo @Clones $timestamp $network $chan 8(Clones Detected) 0 %count 7Clones From 8 $address($nick,2) [[ %clones ]]  
     ; echo -s test final
+    goto comchan
+  }
 
+
+
+  ;End Clone Logger ------
+  ;Start ComChannel Logger
+  ;
+  :comchan  
+  ;---
+  if ($nick == $me) { halt }
+  unset %lo1
+  var %total = $comchan($nick,0), %x = 1
+  while ( %x <= %total ) {
+    set %lo1 %lo1 $+ , $+ $comchan($nick,%x)
+    inc %x
+  }
+  /*
+  You can turn on the next line if you want to have the common channels
+  shown in the channels as the person joins by removing the semicolon in front of the line (;) 
+  */
+  ;echo -nmr $chan 9,1 $nick  is in the following common channels:9,1 $replace(%lo1,$chr(44),$chr(32))
+
+  /*
+  You can turn off the next two lines if you don't want to have the common channels 
+  logged as the person joins by adding a semicolon in front of the lines (;) 
+  */
+  window -De[2]k[0]m @comchan
+  .timer 1 1  echo @comchan $timestamp $network # 9,1 $nick 7,1 is in the following common channels:9,1 $replace(%lo1,$chr(44),$chr(32))
+}
+
+menu channel,menubar,nicklist,channel {
+  CommonChannel:
+  .ComChan $1:/com $1
+  .ComChan ?Nick:/com $input(Enter Nick you want to check for Common Channels,e,Common Channels Check)
+}
+
+alias com {
+
+  if ($1 == $me) { halt }
+  else {
+    unset %lo12
+    var %total = $comchan($1,0), %x = 1
+    while ( %x <= %total ) {
+      set %lo12 %lo12 $+ , $+ $comchan($1,%x)
+      inc %x
+    }
+    /*
+    You can turn off the next line if you don't want to have the common channels
+    shown in the channel when you use the menu to check a nick by adding a semicolon in front of the line (;) 
+    */
+    echo -nmr $chan 9,1 $1  is in the following common channels:9,1 $replace(%lo12,$chr(44),$chr(32))
+
+    /*
+    You can turn off the next two lines if you want to have the common channels 
+    logged when you use the menu to check a nick by removing the semicolon in front of the lines (;) 
+    */
+    ; window -De[2]k[0]m @comchan
+    ; .timer 1 1  echo @comchan $timestamp $network # 9,1 $1 7,1 is in the following common channels:9,1 $replace(%lo12,$chr(44),$chr(32))
   }
 }
-;End Clone Logger ------
+;End ComChannel Logger
 
-
-ctcp 1:tcwbklver:ctcpreply $nick tcwbklver $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) WhoBanKick Logger script version 1.2
+ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.0 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) 
 ; window -De[2]k[0]m @Quits
