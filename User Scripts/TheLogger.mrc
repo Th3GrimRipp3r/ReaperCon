@@ -10,8 +10,8 @@
 ; Each window can be chosen at your leisure to right click on and choose to log or not
 ; As well you can right click on each window and choose to set the timestamp or not
 ; Added CloneScan Right Click | Can now turn off individual sections via right click menu
-; and Menubar )
-; Version 2.3 TheLogger.mrc
+; and Menubar Also can turn Off/On All Logging Now )
+; Version 2.4 TheLogger.mrc
 ;#######################################################################################
 
 ;Start TheLogger ---
@@ -31,34 +31,37 @@ on *:start: {
   .timer 1 12 window -De[2]k[0]m @ComChan
 }
 
-menu channel,menubar {
+
+menu channel,menubar,status,@TheLogger {
   -
   TheLogger:
-  .Loggging  
+  .Logging  
+  ..All Logging
+  ...$iif(($group(#COMCHANCLONE) == off) && ($group(#NOTICE) == off) && ($group(#HIGHLIGHT) == off) && ($group(#BANLOG) == off) && ($group(#KICKLOG) == off) && ($group(#QUITLOG) == off),$style(3))) Off:{ .disable #COMCHANCLONE | .disable #NOTICE | .disable #HIGHLIGHT | .disable #BANLOG | .disable #KICKLOG | .disable #QUITLOG | .echo -a 4(All Logging Off success) }
+  ...$iif(($group(#COMCHANCLONE) == on) && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),$style(3))) On:{ .enable #COMCHANCLONE | .enable #NOTICE | .enable #HIGHLIGHT | .enable #BANLOG | .enable #KICKLOG | .enable #QUITLOG | .echo -a 4(All Logging On success) }
   ..Quits
-  ...$iif($group(#QUITLOG) == off,$style(1)) Not Logged:.disable #QUITLOG | echo -a 4 (#QUITLOG) Logging OFF
-  ...$iif($group(#QUITLOG) == on,$style(1)) On Logging:.enable #QUITLOG | echo -a 12 (#QUITLOG) Logging ON
+  ...$iif($group(#QUITLOG) == off,$style(3)) Off:.disable #QUITLOG | echo -a 4 (#QUITLOG) Logging OFF
+  ...$iif($group(#QUITLOG) == on,$style(3)) On:.enable #QUITLOG | echo -a 12 (#QUITLOG) Logging ON
   ..Kicks
-  ...$iif($group(#KICKLOG) == off,$style(1)) Not Logged:.disable #KICKLOG | echo -a 4 (#KICKLOG) Logging OFF
-  ...$iif($group(#KICKLOG) == on,$style(1)) On Logging:.enable #KICKLOG | echo -a 12 (#KICKLOG) Logging ON
+  ...$iif($group(#KICKLOG) == off,$style(3)) Off:.disable #KICKLOG | echo -a 4 (#KICKLOG) Logging OFF
+  ...$iif($group(#KICKLOG) == on,$style(3)) On:.enable #KICKLOG | echo -a 12 (#KICKLOG) Logging ON 
   ..Bans
-  ...$iif($group(#BANLOG) == off,$style(1)) Not Logged:.disable #BANLOG | echo -a 4 (#BANLOG) Logging OFF
-  ...$iif($group(#BANLOG) == on,$style(1)) On Logging:.enable #BANLOG | echo -a 12 (#BANLOG) Logging ON
+  ...$iif($group(#BANLOG) == off,$style(3)) Off:.disable #BANLOG | echo -a 4 (#BANLOG) Logging OFF
+  ...$iif($group(#BANLOG) == on,$style(3)) On:.enable #BANLOG | echo -a 12 (#BANLOG) Logging ON
   ..Highlights
-  ...$iif($group(#HIGHLIGHT) == off,$style(1)) Not Logged:.disable #HIGHLIGHT | echo -a 4 (#HIGHLIGHT) Logging OFF
-  ...$iif($group(#HIGHLIGHT) == on,$style(1)) On Logging:.enable #HIGHLIGHT | echo -a 12 (#HIGHLIGHT) Logging ON
+  ...$iif($group(#HIGHLIGHT) == off,$style(3)) Off:.disable #HIGHLIGHT | echo -a 4 (#HIGHLIGHT) Logging OFF
+  ...$iif($group(#HIGHLIGHT) == on,$style(3)) On:.enable #HIGHLIGHT | echo -a 12 (#HIGHLIGHT) Logging ON
   ..Notices
-  ...$iif($group(#NOTICE) == off,$style(1)) Not Logged:.disable #NOTICE | echo -a 4 (#NOTICE) Logging OFF
-  ...$iif($group(#NOTICE) == on,$style(1)) On Logging:.enable #NOTICE | echo -a 12 (#NOTICE) Logging ON
+  ...$iif($group(#NOTICE) == off,$style(3)) Off:.disable #NOTICE | echo -a 4 (#NOTICE) Logging OFF
+  ...$iif($group(#NOTICE) == on,$style(3)) On:.enable #NOTICE | echo -a 12 (#NOTICE) Logging ON
   ..Commonchan&Clones
-  ...$iif($group(#COMCHANCLONE) == off,$style(1)) Not Logged:.disable #COMCHANCLONE | echo -a 4 (#COMCHANCLONE) Logging OFF
-  ...$iif($group(#COMCHANCLONE) == on,$style(1)) On Logging:.enable #COMCHANCLONE | echo -a 12 (#COMCHANCLONE) Logging ON
+  ...$iif($group(#COMCHANCLONE) == off,$style(3)) Off:.disable #COMCHANCLONE | echo -a 4 (#COMCHANCLONE) Logging OFF
+  ...$iif($group(#COMCHANCLONE) == on,$style(3)) On:.enable #COMCHANCLONE | echo -a 12 (#COMCHANCLONE) Logging ON
   CloneScan:
   .Clonescan #:/clone #
   .Clonescan ?Chan:/clone $input(Enter #Chan #Chan,e,Clonescan)
-
-
 }
+
 menu channel,menubar,nicklist {
   CommonChannel:
   .ComChan $1:/com $1
@@ -265,6 +268,6 @@ alias clone {
 ; None left as I sold it all for a new version of Dos 2.0 and Windows 3.1...
 ; Ohh, and a pack of Cigarrettes....
 ; #########################################################################
-; To Do set enable/disable for next version
-ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.3 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) (( http://pastebin.com/1ZpgXfKT ))
+
+ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.4 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) (( http://pastebin.com/1ZpgXfKT ))
 ;End TheLogger ---
