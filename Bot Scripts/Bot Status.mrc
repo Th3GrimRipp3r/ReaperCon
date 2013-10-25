@@ -28,15 +28,15 @@ on *:TEXT:!status*:#:{
   if ($2 == delete) {
     if ($3 == user) {
       ruser user $4
-      msg $chan $4 has been added to my User list.
+      msg $chan $4 has been deleted from my User list.
     }
     if ($3 == operator) {
       ruser operator $4
-      msg $chan $4 has been added to my Operator list.
+      msg $chan $4 has been deleted from my Operator list.
     }
     if ($3 == admin) {
       ruser admin $4
-      msg $chan $4 has been added to my Admin list.
+      msg $chan $4 has been deleted from my Admin list.
     }
   }
   if ($2 == $null) {
