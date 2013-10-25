@@ -7,8 +7,9 @@ alias sil {
       else {
         mode $chan +bb ~q: $+ $address($1,2) ~n: $+ $address($1,2)
         writeini Silence.ini $$1 chan $active
-        if ($$1 ishop $active) { writeini Silence.ini $1 status HOP | mode $active -h $1 }
-        if ($$1 isvoice $active) { writeini Silence.ini $1 status VOP | mode $active -v $1 }
+        if ($left($nick($active,$$1).pnick,1) == @) { writeini Silence.ini $1 status AOP | mode $active -o $1 }
+        if ($left($nick($active,$$1).pnick,1) == %) { writeini Silence.ini $1 status HOP | mode $active -h $1 }
+        if ($left($nick($active,$$1).pnick,1) == +) { writeini Silence.ini $1 status VOP | mode $active -v $1 }
         $iif($$1 isreg $active,writeini Silence.ini $1 status REG)
         .timer $+ $+($1,.,$network) 1 $calc($2 * 60) desil $1 $address($1,2) $chan
       }
@@ -18,7 +19,10 @@ alias sil {
 
 on *:JOIN:#: {
   if ($ini(Silence.ini,$nick,chan)) {
-    if ($readini(Silence.ini,$nick,status) == HOP) {
+    if ($readini(Silence.ini,$nick,status) == AOP) {
+      mode $chan -o $nick
+    }
+    elseif ($readini(Silence.ini,$nick,status) == HOP) {
       mode $chan -h $nick
     }
     elseif ($readini(Silence.ini,$nick,status) == VOP) {
@@ -29,6 +33,7 @@ on *:JOIN:#: {
 
 alias -l desil {
   if ($1 ison $3) {
+    if ($readini(Silence.ini,$1,status) == AOP) { mode $$3 +o $1 | remini Silence.ini $1 }
     if ($readini(Silence.ini,$1,status) == HOP) { mode $$3 +h $1 | remini Silence.ini $1 }
     if ($readini(Silence.ini,$1,status) == VOP) { mode $$3 +v $1 | remini Silence.ini $1 }
     mode $3 -bb ~q: $+ $2 ~n: $+ $2
