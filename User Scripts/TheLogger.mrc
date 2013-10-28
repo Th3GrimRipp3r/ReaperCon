@@ -1,5 +1,5 @@
 ; TheLogger By TomCoyote ( Tom Coyote Wilson aka Coyote` on Geekshed.net IRC network )
-; This script opens 7 windows (Highlights\Notice\Bans\Kicks\Quits\Clones\ComChan)
+; This script opens 8 windows (Highlights\Notice\Bans\Kicks\Quits\Clones\ComChan\Nick)
 ; As you are Highlighted in channels that action is logged via Network\Channel\User
 ; As you are Noticed on a network that action is logged via Network\Common Channels
 ; As a Ban happens it is logged via Banned\Hostmask\Channel\Network\Banner\Reason
@@ -7,11 +7,12 @@
 ; As a Quit happens it is logged via Quit\Message\Nick\Host\Network
 ; As Clones detected they are logged via Network\Host\Channel\Nicks
 ; As ComChannels Are Detected they are logged via Network\Channel\Nick\ComCHannels
+; As A user changes Nicks The Old and New Nick is logged as well as Userhost and time and network
 ; Each window can be chosen at your leisure to right click on and choose to log or not
 ; As well you can right click on each window and choose to set the timestamp or not
 ; Added CloneScan Right Click | Can now turn off individual sections via right click menu
 ; and Menubar Also can turn Off/On All Logging Now )
-; Version 2.4 TheLogger.mrc
+; Version 2.5 TheLogger.mrc
 ;#######################################################################################
 
 ;Start TheLogger ---
@@ -29,6 +30,8 @@ on *:start: {
   .timer 1 8 window -De[2]k[0]m @Quits
   .timer 1 10 window -De[2]k[0]m @Clones
   .timer 1 12 window -De[2]k[0]m @ComChan
+  .timer 1 14   window -De[2]k[0]m @Nicks
+
 }
 
 
@@ -37,8 +40,8 @@ menu channel,menubar,status,@TheLogger {
   TheLogger:
   .Logging  
   ..All Logging
-  ...$iif(($group(#COMCHANCLONE) == off) && ($group(#NOTICE) == off) && ($group(#HIGHLIGHT) == off) && ($group(#BANLOG) == off) && ($group(#KICKLOG) == off) && ($group(#QUITLOG) == off),$style(3))) Off:{ .disable #COMCHANCLONE | .disable #NOTICE | .disable #HIGHLIGHT | .disable #BANLOG | .disable #KICKLOG | .disable #QUITLOG | .echo -a 4(All Logging Off success) }
-  ...$iif(($group(#COMCHANCLONE) == on) && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),$style(3))) On:{ .enable #COMCHANCLONE | .enable #NOTICE | .enable #HIGHLIGHT | .enable #BANLOG | .enable #KICKLOG | .enable #QUITLOG | .echo -a 4(All Logging On success) }
+  ...$iif(($group(#COMCHANCLONE) == off) && ($group(#NICKLOG) == off)  && ($group(#NOTICE) == off) && ($group(#HIGHLIGHT) == off) && ($group(#BANLOG) == off) && ($group(#KICKLOG) == off) && ($group(#QUITLOG) == off),$style(3))) Off:{ .disable #NICKLOG | .disable #COMCHANCLONE | .disable #NOTICE | .disable #HIGHLIGHT | .disable #BANLOG | .disable #KICKLOG | .disable #QUITLOG | .echo -a 4(All Logging Off success) }
+  ...$iif(($group(#COMCHANCLONE) == on) && ($group(#NICKLOG) == on)  && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),$style(3))) On:{ .enable #NICKLOG | .enable #COMCHANCLONE | .enable #NOTICE | .enable #HIGHLIGHT | .enable #BANLOG | .enable #KICKLOG | .enable #QUITLOG | .echo -a 4(All Logging On success) }
   ..Quits
   ...$iif($group(#QUITLOG) == off,$style(3)) Off:.disable #QUITLOG | echo -a 4 (#QUITLOG) Logging OFF
   ...$iif($group(#QUITLOG) == on,$style(3)) On:.enable #QUITLOG | echo -a 12 (#QUITLOG) Logging ON
@@ -57,6 +60,10 @@ menu channel,menubar,status,@TheLogger {
   ..Commonchan&Clones
   ...$iif($group(#COMCHANCLONE) == off,$style(3)) Off:.disable #COMCHANCLONE | echo -a 4 (#COMCHANCLONE) Logging OFF
   ...$iif($group(#COMCHANCLONE) == on,$style(3)) On:.enable #COMCHANCLONE | echo -a 12 (#COMCHANCLONE) Logging ON
+  ..Nicks
+  ...$iif($group(#NICKLOG) == off,$style(3)) Off:.disable #NICKLOG | echo -a 4 (#NICKLOG) Logging OFF
+  ...$iif($group(#NICKLOG) == on,$style(3)) On:.enable #NICKLOG | echo -a 12 (#NICKLOG) Logging ON
+
   CloneScan:
   .Clonescan #:/clone #
   .Clonescan ?Chan:/clone $input(Enter #Chan #Chan,e,Clonescan)
@@ -68,7 +75,12 @@ menu channel,menubar,nicklist {
   .ComChan ?Nick:/com $input(Enter Nick you want to check for Common Channels,e,Common Channels Check)
 
 }
-
+#NICKLOG on
+on 1:NICK: {
+  window -De[2]k[0]m @Nicks
+  echo @Nicks [Nick Tracker]9,1 $timestamp $network -- 7,1  $nick --4,1 $address($newnick,1) --is Transposed as $newnick
+}
+#NICKLOG  end
 #QUITLOG on
 on 1:QUIT: { 
   window -De[2]k[0]m @Quits
@@ -269,5 +281,5 @@ alias clone {
 ; Ohh, and a pack of Cigarrettes....
 ; #########################################################################
 
-ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.4 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) (( http://pastebin.com/1ZpgXfKT ))
+ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.5 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) (( http://pastebin.com/1ZpgXfKT ))
 ;End TheLogger ---
