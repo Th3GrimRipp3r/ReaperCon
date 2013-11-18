@@ -1,39 +1,37 @@
 ; Created by TomCoyoteWilson of Geekshed IRC #iamaddictedtoirc
 ; for Pleasure only not for diagnosis of your neurosis
 ; Created on or about 11-15-2013 to 11-17-2013
-; Have fun || Added a menu on the bot or user to turn off the 
-; Trigger !phobia
+; Have fun || Added a menu on the bot or user to turn off the Trigger
+; PM the bot use the Trigger !phobia <word to search for>
+; Command line /phobia <word to search for> puts the results to 
+; a window @Phobia
+
 menu channel,menubar {
   Phobia:
   .$iif($group(#phobia) == off,$style(3)) Off:.disable #phobia | echo -a 4 (#phobia)  OFF
   .$iif($group(#phobia) == on,$style(3)) On:.enable #phobia | echo -a 12 (#phobia) ON
 }
 #phobia on
-
-on *:TEXT:!phobia*:#: {
+on *:TEXT:!phobia*:?: {
   set %phobia.nick $nick
   set %2 $2
+  if (%2 == $null) { .msg  $nick sorry, can't help your phobia of talking to a bot | .timer 1 2 .msg $nick you must use !phobia <word to search for> | halt } 
   if (fear isin %2) || ($len(%2) <= 3) || (%2 !isalpha) { halt }
-  if (%2 == $null) { msg $nick sorry, can't help your phobia of talking to a bot | halt }
- 
-  phobiab %2
- 
+  phobiab %2 
 }
- 
 #phobia end
 alias -l phobiab {
-  window -De[2]k[0]m @Define
+  if ($read(scripts\phobia.txt,w, * $+ %2 $+ * ,0) == $null) { .msg %phobia.nick 7 Sorry,  no results | halt }
   .msg %phobia.nick 7  $read(scripts\phobia.txt,w, * $+ %2 $+ * ,0) 9 $readn
   .timer 1 4 phobiab2
   .set %n  $readn
   .inc %n
 }
- 
+
 alias -l phobiab2 {
-  window -De[2]k[0]m @Define
   :loop
-  if (%n = 0) { halt }
-  msg %phobia.nick 7  $read(scripts\phobia.txt,w, * $+ %2 $+ * ,%n) 9 $readn
+  if (%n = 0) || ($read(scripts\phobia.txt,w, * $+ %2 $+ * ,%n) == $null) { halt }
+  .msg %phobia.nick 7  $read(scripts\phobia.txt,w, * $+ %2 $+ * ,%n) 9 $readn
   goto one
   :one
   .set %n  $readn
@@ -43,34 +41,37 @@ alias -l phobiab2 {
   if (%n > 2) {
     goto loop
   }
-  else {
+  else { 
     unset %phobia.nick
     unset %n
-    halt
+    halt 
   }
 }
+
+##############
 ############
 ; command line
 ; Syntax /phobia <wordtosearchfor>
- 
+
 alias phobia {
   unset %n
   set %1 $1-
   window -De[2]k[0]m @Phobia
-  echo @Phobia 7  $read(scripts\phobia.txt,w, * $+ %1 $+ * ,0) 9 $readn
+  if ($read(scripts\phobia.txt,w, * $+ %1 $+ * ,0) == $null) { .echo @Phobia 7 Sorry,  no results | halt }
+  .echo @Phobia 7  $read(scripts\phobia.txt,w, * $+ %1 $+ * ,0) 9 $readn
   .timer 1 4 phobia2
   .set %n  $readn
   .inc %n
 }
- 
+
 alias phobia2 {
   window -De[2]k[0]m @Phobia
   :loop
-  if (%n = 0) { halt }
+  if (%n = 0) || ($read(scripts\phobia.txt,w, * $+ %1 $+ * ,%n) == $null) { halt }
   if (%n > 0) {
     .inc %n
   }
-  echo @Phobia 7  $read(scripts\phobia.txt,w, * $+ %1 $+ * ,%n) 9 $readn
+  .echo @Phobia 7  $read(scripts\phobia.txt,w, * $+ %1 $+ * ,%n) 9 $readn
   goto one
   :one
   .set %n  $readn
@@ -82,11 +83,13 @@ alias phobia2 {
   }
   else { halt }
 }
- 
-; ##############
-THis next part you cut to a text file in your scripts directory so this script can pick it up!!
-; ##########################################################################################################################################################
- 
+; #################################################
+
+
+Text below to be saved to a Text file named phobia.txt in your scripts dir.
+
+; #############################################################
+
 [Ablutophobia] Fear of washing or bathing.
 [Acarophobia] Fear of itching or of the insects that cause itching.
 [Acerophobia] Fear of sourness.
@@ -129,7 +132,7 @@ THis next part you cut to a text file in your scripts directory so this script c
 [Antlophobia] Fear of floods.
 [Anuptaphobia] Fear of staying single.
 [Apeirophobia] Fear of infinity.
-[Aphenphosmphobia] Fear of being touched.
+[Aphenphosmphobia] Fear of being touched. 
 [Apiphobia] Fear of bees.
 [Apotemnophobia] Fear of persons with amputations.
 [Arachibutyrophobia] Fear of peanut butter sticking to the roof of the mouth.
@@ -303,7 +306,7 @@ THis next part you cut to a text file in your scripts directory so this script c
 [Hagiophobia] Fear of saints or holy things.
 [Hamartophobia] Fear of sinning.
 [Haphephobia] Fear of being touched. [Haptephobia] Fear of being touched.
-[Harpaxophobia] Fear of being robbed.
+[Harpaxophobia] Fear of being robbed. 
 [Hedonophobia] Fear of feeling pleasure.
 [Heliophobia] Fear of the sun.
 [Hellenologophobia] Fear of Greek terms or complex scientific terminology.
@@ -552,7 +555,7 @@ THis next part you cut to a text file in your scripts directory so this script c
 [Siderophobia] Fear of stars.
 [Sinistrophobia] Fear of things to the left or left-handed.
 [Sinophobia] Fear of Chinese, Chinese culture.
-[Sitophobia] Fear of food or eating. (Cibophobia) [Sitiophobia] Fear of food or eating. (Cibophobia)
+[Sitophobia] Fear of food or eating. (Cibophobia) [Sitiophobia] Fear of food or eating. (Cibophobia) 
 [Snakephobia] Fear of snakes. (Ophidiophobia)
 [Soceraphobia] Fear of parents-in-law.
 [Social Phobia] Fear of being evaluated negatively in social situations.
@@ -628,3 +631,5 @@ THis next part you cut to a text file in your scripts directory so this script c
 [Zeusophobia] Fear of God or gods.
 [Zemmiphobia] Fear of the great mole rat.
 [Zoophobia] Fear of animals.
+
+
