@@ -1,7 +1,14 @@
 ; Created by TomCoyoteWilson of Geekshed IRC #iamaddictedtoirc
 ; for Pleasure only not for diagnosis of your neurosis
 ; Created on or about 11-15-2013 to 11-17-2013
-; Have fun
+; Have fun || Added a menu on the bot or user to turn off the 
+; Trigger !phobia
+menu channel,menubar {
+  Phobia:
+  .$iif($group(#phobia) == off,$style(3)) Off:.disable #phobia | echo -a 4 (#phobia)  OFF
+  .$iif($group(#phobia) == on,$style(3)) On:.enable #phobia | echo -a 12 (#phobia) ON
+}
+
 on *:TEXT:!phobia*:#: {
   set %phobia.nick $nick
   set %2 $2
