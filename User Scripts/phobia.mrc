@@ -8,6 +8,7 @@ menu channel,menubar {
   .$iif($group(#phobia) == off,$style(3)) Off:.disable #phobia | echo -a 4 (#phobia)  OFF
   .$iif($group(#phobia) == on,$style(3)) On:.enable #phobia | echo -a 12 (#phobia) ON
 }
+#phobia on
 
 on *:TEXT:!phobia*:#: {
   set %phobia.nick $nick
@@ -19,6 +20,7 @@ on *:TEXT:!phobia*:#: {
  
 }
  
+#phobia end
 alias -l phobiab {
   window -De[2]k[0]m @Define
   .msg %phobia.nick 7  $read(scripts\phobia.txt,w, * $+ %2 $+ * ,0) 9 $readn
