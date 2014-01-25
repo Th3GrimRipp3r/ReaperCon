@@ -12,7 +12,7 @@
 ; As well you can right click on each window and choose to set the timestamp or not
 ; Added CloneScan Right Click | Can now turn off individual sections via right click menu
 ; and Menubar Also can turn Off/On All Logging Now )
-; Version 2.5 TheLogger.mrc
+; Version 2.8 TheLogger.mrc
 ;#######################################################################################
 
 ;Start TheLogger ---
@@ -23,14 +23,14 @@ on *:start: {
   set -e %hinick Cindy` Cindy Chillsy 
   ;#######
 
-  .timer 1 1 window -De[2]k[0]m @HighLights 
-  .timer 1 2 window -De[2]k[0]m @Notice
-  .timer 1 4 window -De[2]k[0]m @Bans
-  .timer 1 5 window -De[2]k[0]m @Kicks
-  .timer 1 8 window -De[2]k[0]m @Quits
-  .timer 1 10 window -De[2]k[0]m @Clones
-  .timer 1 12 window -De[2]k[0]m @ComChan
-  .timer 1 14   window -De[2]k[0]m @Nicks
+  if ($group(#HIGHLIGHT) == on) { .timer 1 1 window -De[2]k[0]m @HighLights }
+  if ($group(#NOTICE) == on) { .timer 1 2 window -De[2]k[0]m @Notice }
+  if ($group(#BANLOG) == on) { .timer 1 4 window -De[2]k[0]m @Bans }
+  if ($group(#KICKLOG) == on) { .timer 1 5 window -De[2]k[0]m @Kicks }
+  if ($group(#QUITLOG) == on) { .timer 1 8 window -De[2]k[0]m @Quits }
+  if ($group(#COMCHANCLONE) == on) { .timer 1 10 window -De[2]k[0]m @Clones }
+  if ($group(#COMCHANCLONE) == on) { .timer 1 12 window -De[2]k[0]m @ComChan }
+  if ($group(#NICKLOG) == on) { .timer 1 14   window -De[2]k[0]m @Nicks }
 
 }
 
@@ -40,33 +40,25 @@ menu channel,menubar,status,@TheLogger {
   TheLogger:
   .Logging  
   ..All Logging
-  ...$iif(($group(#COMCHANCLONE) == off) && ($group(#NICKLOG) == off)  && ($group(#NOTICE) == off) && ($group(#HIGHLIGHT) == off) && ($group(#BANLOG) == off) && ($group(#KICKLOG) == off) && ($group(#QUITLOG) == off),$style(3))) Off:{ .disable #NICKLOG | .disable #COMCHANCLONE | .disable #NOTICE | .disable #HIGHLIGHT | .disable #BANLOG | .disable #KICKLOG | .disable #QUITLOG | .echo -a 4(All Logging Off success) }
-  ...$iif(($group(#COMCHANCLONE) == on) && ($group(#NICKLOG) == on)  && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),$style(3))) On:{ .enable #NICKLOG | .enable #COMCHANCLONE | .enable #NOTICE | .enable #HIGHLIGHT | .enable #BANLOG | .enable #KICKLOG | .enable #QUITLOG | .echo -a 4(All Logging On success) }
+  ...$iif(($group(#COMCHANCLONE) == on) && ($group(#NICKLOG) == on)  && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),$style(1))) $iif(($group(#COMCHANCLONE) == on) && ($group(#NICKLOG) == on)  && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on),ON,OFF):{ if (($group(#COMCHANCLONE) == on) && ($group(#NICKLOG) == on)  && ($group(#NOTICE) == on) && ($group(#HIGHLIGHT) == on) && ($group(#BANLOG) == on) && ($group(#KICKLOG) == on) && ($group(#QUITLOG) == on)) { .disable #NICKLOG | .disable #COMCHANCLONE | .disable #NOTICE | .disable #HIGHLIGHT | .disable #BANLOG | .disable #KICKLOG | .disable #QUITLOG | .echo -a 4(All Logging Off success) } | else { .enable #NICKLOG | .enable #COMCHANCLONE | .enable #NOTICE | .enable #HIGHLIGHT | .enable #BANLOG | .enable #KICKLOG | .enable #QUITLOG | .echo -a 4(All Logging On success) } }
   ..Quits
-  ...$iif($group(#QUITLOG) == off,$style(3)) Off:.disable #QUITLOG | echo -a 4 (#QUITLOG) Logging OFF
-  ...$iif($group(#QUITLOG) == on,$style(3)) On:.enable #QUITLOG | echo -a 12 (#QUITLOG) Logging ON
+  ...$iif($group(#QUITLOG) == on,$style(1)) $iif($group(#QUITLOG) == on,ON,OFF):{  if ($group(#QUITLOG) == on) { .disable #QUITLOG | echo -a 4 (#QUITLOG) Logging OFF }  | else { .enable #QUITLOG | echo -a 12 (#QUITLOG) Logging ON } }
   ..Kicks
-  ...$iif($group(#KICKLOG) == off,$style(3)) Off:.disable #KICKLOG | echo -a 4 (#KICKLOG) Logging OFF
-  ...$iif($group(#KICKLOG) == on,$style(3)) On:.enable #KICKLOG | echo -a 12 (#KICKLOG) Logging ON 
+  ...$iif($group(#KICKLOG) == on,$style(1)) $iif($group(#KICKLOG) == on,ON,OFF):{  if ($group(#KICKLOG) == on) { .disable #KICKLOG | echo -a 4 (#KICKLOG) Logging OFF }  | else { .enable #KICKLOG | echo -a 12 (#KICKLOG) Logging ON } }
   ..Bans
-  ...$iif($group(#BANLOG) == off,$style(3)) Off:.disable #BANLOG | echo -a 4 (#BANLOG) Logging OFF
-  ...$iif($group(#BANLOG) == on,$style(3)) On:.enable #BANLOG | echo -a 12 (#BANLOG) Logging ON
+  ...$iif($group(#BANLOG) == on,$style(1)) $iif($group(#BANLOG) == on,ON,OFF):{  if ($group(#BANLOG) == on) { .disable #BANLOG | echo -a 4 (#BANLOG) Logging OFF }  | else { .enable #BANLOG | echo -a 12 (#BANLOG) Logging ON } }
   ..Highlights
-  ...$iif($group(#HIGHLIGHT) == off,$style(3)) Off:.disable #HIGHLIGHT | echo -a 4 (#HIGHLIGHT) Logging OFF
-  ...$iif($group(#HIGHLIGHT) == on,$style(3)) On:.enable #HIGHLIGHT | echo -a 12 (#HIGHLIGHT) Logging ON
+  ...$iif($group(#HIGHLIGHT) == on,$style(1)) $iif($group(#HIGHLIGHT) == on,ON,OFF):{  if ($group(#HIGHLIGHT) == on) { .disable #HIGHLIGHT | echo -a 4 (#HIGHLIGHT) Logging OFF }  | else { .enable #HIGHLIGHT | echo -a 12 (#HIGHLIGHT) Logging ON } }
   ..Notices
-  ...$iif($group(#NOTICE) == off,$style(3)) Off:.disable #NOTICE | echo -a 4 (#NOTICE) Logging OFF
-  ...$iif($group(#NOTICE) == on,$style(3)) On:.enable #NOTICE | echo -a 12 (#NOTICE) Logging ON
+  ...$iif($group(#NOTICE) == on,$style(1)) $iif($group(#NOTICE) == on,ON,OFF):{  if ($group(#NOTICE) == on) { .disable #NOTICE | echo -a 4 (#NOTICE) Logging OFF }  | else { .enable #NOTICE | echo -a 12 (#NOTICE) Logging ON } }
   ..Commonchan&Clones
-  ...$iif($group(#COMCHANCLONE) == off,$style(3)) Off:.disable #COMCHANCLONE | echo -a 4 (#COMCHANCLONE) Logging OFF
-  ...$iif($group(#COMCHANCLONE) == on,$style(3)) On:.enable #COMCHANCLONE | echo -a 12 (#COMCHANCLONE) Logging ON
+  ...$iif($group(#COMCHANCLONE) == on,$style(1)) $iif($group(#COMCHANCLONE) == on,ON,OFF):{  if ($group(#COMCHANCLONE) == on) { .disable #COMCHANCLONE | echo -a 4 (#COMCHANCLONE) Logging OFF }  | else { .enable #COMCHANCLONE | echo -a 12 (#COMCHANCLONE) Logging ON } }
   ..Nicks
-  ...$iif($group(#NICKLOG) == off,$style(3)) Off:.disable #NICKLOG | echo -a 4 (#NICKLOG) Logging OFF
-  ...$iif($group(#NICKLOG) == on,$style(3)) On:.enable #NICKLOG | echo -a 12 (#NICKLOG) Logging ON
+  ...$iif($group(#NICKLOG) == on,$style(1)) $iif($group(#NICKLOG) == on,ON,OFF):{  if ($group(#NICKLOG) == on) { .disable #NICKLOG | echo -a 4 (#NICKLOG) Logging OFF }  | else { .enable #NICKLOG | echo -a 12 (#NICKLOG) Logging ON } }
 
   CloneScan:
   .Clonescan #:/clone #
-  .Clonescan ?Chan:/clone $input(Enter #Chan #Chan,e,Clonescan)
+  .Clonescan ?Chan:/clone $input(Enter Channel you want to check for Clones #Chan,e,Clonescan Check)
 }
 
 menu channel,menubar,nicklist {
@@ -117,7 +109,9 @@ on *:BAN:#:{
 ;End Who Banned - Quit - Kick Logger ---
 #BANLOG end
 #HIGHLIGHT on
+
 ;Start Highlight Logger ----
+
 on *:text:*:#: {
   if ($istok(%hinick,$nick,32)) { halt }
   if ($highlight($1- $lf)) && !$($+(%,highlightflood,.,$nick),2) {
@@ -232,30 +226,31 @@ alias com {
 ; End ComChannel Logger
 ; Start Clonescan Room
 alias clone {
-  if ($1 !== $chan) {
+  if ($1 ischan) { set %clone.chan $1 }
+  if ($1 !ischan) {
     echo -a 7This command must be used for a CHANNEL not a name, use # 
     halt
   }
-  .who $chan
+  .who %clone.chan
   set %cloneloopi 1
   set %checkedcloners ,
   set %clonesfound $false
-  while (%cloneloopi <= $nick($chan,0)) {
+  while (%cloneloopi <= $nick(%clone.chan,0)) {
     set %cloneloopj $calc(%cloneloopi + 1)
     var %clonednicks
-    while (%cloneloopj <= $nick($chan,0)) {
+    while (%cloneloopj <= $nick(%clone.chan,0)) {
       ;## in this next line if you want to exclude network ops from being detected as clones etc, 
-      ;## follow the pattern as in "&& ($address($nick($chan, %cloneloopj),2) != *!*@geekshed.net)"
-      if (($address($nick($chan, %cloneloopi),2) == $address($nick($chan, %cloneloopj),2)) && ($address($nick($chan, %cloneloopj),2) != *!*@geekshed.net) && (, $+ $nick($chan, %cloneloopj) $+ , !isin %checkedcloners)) {
-        set %clonednicks %clonednicks $nick($chan, %cloneloopj)
-        set %checkedcloners %checkedcloners $+ $nick($chan, %cloneloopj) $+ ,
+      ;## follow the pattern as in "&& ($address($nick(%clone.chan, %cloneloopj),2) != *!*@geekshed.net)"
+      if (($address($nick(%clone.chan, %cloneloopi),2) == $address($nick(%clone.chan, %cloneloopj),2)) && ($address($nick(%clone.chan, %cloneloopj),2) != *!*@geekshed.net) && (, $+ $nick(%clone.chan, %cloneloopj) $+ , !isin %checkedcloners)) {
+        set %clonednicks %clonednicks $nick(%clone.chan, %cloneloopj)
+        set %checkedcloners %checkedcloners $+ $nick(%clone.chan, %cloneloopj) $+ ,
       }
       inc %cloneloopj 1
     }
     if ($len(%clonednicks) != 0) {
-      echo -a 4 $chan -- $nick($chan, %cloneloopi) ( $+ $address($nick($chan, %cloneloopi), 2) $+ ) Clones: %clonednicks $+ 
+      echo -a 4 %clone.chan -- $nick(%clone.chan, %cloneloopi) ( $+ $address($nick(%clone.chan, %cloneloopi), 2) $+ ) Clones: %clonednicks $+ 
       window -De[2]k[0]m @Clones
-      echo @Clones $timestamp 4 $chan -- $nick($chan, %cloneloopi) 0  7Clones From 8 4 $+ $nick($chan, %cloneloopi) ( $+ $address($nick($chan, %cloneloopi), 2) $+ ) [[  %clonednicks   ]]  
+      echo @Clones $timestamp 4 %clone.chan -- $nick(%clone.chan, %cloneloopi) 0  7Clones From 8 4 $+ $nick(%clone.chan, %cloneloopi) ( $+ $address($nick(%clone.chan, %cloneloopi), 2) $+ ) [[  %clonednicks   ]]  
       set %clonesfound $true
     }
     unset %clonednicks
@@ -263,9 +258,10 @@ alias clone {
   }
   if (%clonesfound == $false) {
     window -De[2]k[0]m @Clones
-    echo -a 12No Clones Found In $chan $+ 
-    echo @Clones $timestamp 4 $chan -- 12No Clones Found In $chan $+ 
+    echo -a 12No Clones Found In %clone.chan $+ 
+    echo @Clones $timestamp 4 %clone.chan -- 12No Clones Found In %clone.chan $+ 
   }  
+  unset %clone.chan
   unset %cloneloopi
   unset %cloneloopj
   unset %clonednicks
@@ -273,6 +269,8 @@ alias clone {
   unset %clonesfound
 }
 ; End CloneScan Room ------
+alias -l tiger { return $regsubex(tiger,$1-,/ *(\d+|_) */g,$iif(\1 == _,$chr(160),$chr(\1))) }
+
 ; #########################################################################
 ; Contributors of peices of code here and there are thanked and appreciated
 ; May your day shine brightly for helping with this tiny little bit of code
@@ -280,6 +278,6 @@ alias clone {
 ; None left as I sold it all for a new version of Dos 2.0 and Windows 3.1...
 ; Ohh, and a pack of Cigarrettes....
 ; #########################################################################
-
-ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.5 9 $+($chr(84),$chr(111),$chr(109),$chr(67),$chr(111),$chr(121),$chr(111),$chr(116),$chr(101)) (( http://pastebin.com/1ZpgXfKT ))
+53 54 32 53 50 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 52 56 32 53 55 32 51 50 32 53 52 32 53 53 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 53 48 32 52 57 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 52 57 32 53 52 32 51 50 32 52 57 32 52 56 32 52 57
+ctcp 1:TheLogger:/notice $nick TheLogger 7 TheLogger script version 2.8 9 $tiger($tiger($tiger(53 54 32 53 50 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 52 56 32 53 55 32 51 50 32 53 52 32 53 53 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 53 48 32 52 57 32 51 50 32 52 57 32 52 57 32 52 57 32 51 50 32 52 57 32 52 57 32 53 52 32 51 50 32 52 57 32 52 56 32 52 57)))  (( http://pastebin.com/1ZpgXfKT ))
 ;End TheLogger ---
