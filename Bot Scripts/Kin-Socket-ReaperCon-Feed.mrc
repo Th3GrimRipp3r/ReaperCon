@@ -1,8 +1,16 @@
 ; Kin's GitHub Feed for ReaperCon
 ; irc.GeekShed.net #ReaperCon
 
-; https://github.com/Th3GrimRipp3r/ReaperCon/commits/master.atom
+; ---- USAGE:
+; !github https://github.com/Th3GrimRipp3r/ReaperCon/blob/master/Bot%20Scripts/Kin-Socket-ReaperCon-Feed.mrc
+; !github Th3GrimRipp3r/ReaperCon
+; !reapercon
+; /ReaperConFeed.Get GitHubUser/RepositoryName !msg #Channel Text To Display Before Feed Result
+; /ReaperConFeed.Get GitHubUser/RepositoryName echo -ag
 
+; ---- History:
+; 2014-01-27 v1.8 Added !github trigger, and rearranged alias, to report the last commit from any github repository
+; 2013-01-25 v1.7 Use Author name if available, URI if not, or email as a last resort
 ; 2013-03-26 v1.6 Report the first file modified/added/removed for each commit
 ; 2013-03-13 v1.5 Few touch-ups, improved HTTP headers
 ; 2013-03-12 v1.4 Sneakily extract the extended description from commit feed's <content> tag
@@ -15,34 +23,50 @@
 
 alias -l MaxMessageLength { return 384 }
 
-; -------- Events
+; -------- Automatic Feed Timer
 
-on *:TEXT:!ReaperCon:#ReaperCon:{
-  if ($nick !isop $chan) && ($nick !ishop $chan) { return }
-  unset %ReaperConFeed.Last
-  ReaperConFeed.Get !msg $chan
-}
 on *:CONNECT:{ if ($network == GeekShed) { ReaperConFeed.Enable } }
 on *:DISCONNECT:{ if ($network == GeekShed) { ReaperConFeed.Disable } }
-alias -l ReaperConFeed.Enable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
-alias -l ReaperConFeed.Disable { .timerReaperConFeed.Check off }
-alias -l ReaperConFeed.Check { if ($me ison #ReaperCon) { ReaperConFeed.Get !msg #ReaperCon } }
+alias ReaperConFeed.Enable { .timerReaperConFeed.Check 0 120 ReaperConFeed.Check }
+alias ReaperConFeed.Disable { .timerReaperConFeed.Check off }
+alias -l ReaperConFeed.Check { if ($me ison #ReaperCon) { ReaperConFeed.Get Th3GrimRipp3r/ReaperCon !msg #ReaperCon $ReaperConTag } }
+
+; -------- Events
+
+on *:TEXT:!*:#ReaperCon:{
+  if ($nick !isop $chan) && ($nick !ishop $chan) { return }
+  if (!$istok(!ReaperCon !TomHub !GitHub,$1,32)) { return }
+  var %feedpath
+  var %msgtag
+  if ($1 == !ReaperCon) { %feedpath = Th3GrimRipp3r/ReaperCon | %msgtag = $ReaperConTag }
+  if ($1 == !TomHub) { %feedpath = TomCoyote/Cindy | %msgtag = $GitHubTag(Cindy) }
+  if ($2) && ($regex(githubpath,$2,/^(?:https?:\/\/)?(?:www\.)?(?:github\.com)?\/?([^\/]++\/([^\/]++))/)) { %feedpath = $regml(githubpath,1) | %msgtag = $GitHubTag($regml(githubpath,2)) }
+  if (!%feedpath) {
+    !msg $chan $GitHubTag(GitHub) Error - Please use the format !GitHub GitHubUserName/RepositoryName
+    return
+  }
+  unset %ReaperConFeed.Last. [ $+ [ %feedpath ] ]
+  ReaperConFeed.Get %feedpath !msg $chan %msgtag
+}
 
 ; -------- Socket
 
 alias ReaperConFeed.Get {
   ReaperConFeed.Timeout 
 
-  var %callback $1-
-  if (!%callback) || (!$istok(say msg echo notice describe,$replace($1,!,),32)) { %callback = !echo -ta }
+  if ($1) && (!$regex(validatepath,$1,/^([^\/]++\/([^\/]++))/)) { return }
+
+  var %callback $2-
+  if (!%callback) || (!$istok(say msg echo notice describe,$replace($gettok(%callback,1,32),!,),32)) { %callback = !echo -ta $GitHubTag(GitHub) }
 
   if $hget(ReaperConFeed) { hfree ReaperConFeed }
   hadd -m ReaperConFeed Host github.com
-  hadd ReaperConFeed Path /Th3GrimRipp3r/ReaperCon/commits/master.atom
+  hadd ReaperConFeed FeedPath $1
+  hadd ReaperConFeed Path / $+ $1 $+ /commits/master.atom
   hadd ReaperConFeed Callback %callback
   hadd ReaperConFeed File $qt($mIRCdir $+ ReaperConFeed. $+ $ctime $+ .dat)
 
-  .timerReaperConFeed 1 15 ReaperConFeed.Timeout 
+  .timerReaperConFeed 1 12 ReaperConFeed.Timeout 
   sockopen -e ReaperConFeed github.com 443
 }
 
@@ -87,10 +111,11 @@ alias -l ReaperConFeed.Close {
   .timerReaperConFeed off
 
   var %callback $hget(ReaperConFeed,Callback)
+  var %feedpath $hget(ReaperConFeed,FeedPath)
 
   var %id 1
   if ($ReaperConFeed.Parse(%callback,$hget(ReaperConFeed,File),%id) == $true) {
-    var %out $ReaperConTag
+    var %out
     var %link
 
     %out = %out $Colorize(05,$Hash.GetData(%id,Name))
@@ -113,9 +138,9 @@ alias -l ReaperConFeed.Close {
 
     %out = %out %link
 
-    if (%callback) && (%out != %ReaperConFeed.Last) {
+    if (%callback) && (($var($+(ReaperConFeed.Last.,%feedpath),0) == 0) || (%out != $var($+(ReaperConFeed.Last.,%feedpath),1).value)) {
       %callback %out
-      set %ReaperConFeed.Last %out
+      set %ReaperConFeed.Last. $+ %feedpath %out
     }
   }
 
@@ -131,7 +156,21 @@ alias ReaperConFeed.Parse {
   if ($regex(%data,/<link [^>]*? href="([^"]+)/)) { noop $Hash.SetData(%id,Link,$regml(1)) }
   if ($regex(%data,/<title>([^<]*)<\/title>/)) { noop $Hash.SetData(%id,Title,$regml(1)) }
   if ($regex(%data,/<updated>([^<]*)<\/updated>/)) { noop $Hash.SetData(%id,Updated,$regml(1)) }
-  if ($regex(%data,/<name>([^<]*)<\/name>/)) { noop $Hash.SetData(%id,Name,$regml(1)) | %bfound = $true }
+  if ($regex(%data,/<name>([^<]+)<\/name>/)) { noop $Hash.SetData(%id,Name,$regml(1)) | %bfound = $true }
+  if (!%bfound) {
+    if ($regex(%data,/<uri>([^<]+)<\/uri>/)) { noop $Hash.SetData(%id,Name,$regml(1)) | %bfound = $true }
+  }
+  if (!%bfound) {
+    if ($regex(%data,/<email>([^<]+)<\/email>/)) {
+      if (TheReaper isin $regml(1)) {
+        noop $Hash.SetData(%id,Name,"Dan Reaper")
+      }
+      else {
+        noop $Hash.SetData(%id,Name,$regml(1)) 
+      }
+      %bfound = $true
+    }
+  }
 
   ; Extended description inside <content ..> ?
   var %content $Kin.Parser.Find(%file,> $+ $Hash.GetData(%id,Title),</content>)
@@ -151,6 +190,7 @@ alias ReaperConFeed.Parse {
 
 alias Colorize { return $iif($regex(color,$1,/^(0?\d|1[01-5])$/),$+($chr(03),$1,$$2-,$chr(03),$chr(15)),$1-) }
 alias ReaperConTag { return $+($chr(40),$Colorize(06,ReaperCon),$chr(41)) }
+alias GitHubTag { return $+($chr(40),$Colorize(06,$1-),$chr(41)) }
 
 alias -l Hash.GetData { return $hget(ReaperConFeed,$+(Entry.,$1,.,$$2)) }
 alias -l Hash.SetData { hadd ReaperConFeed $+(Entry.,$1,.,$$2) $HTMLEntities($3-) }
