@@ -1,8 +1,24 @@
-; Tom's Channel Modes
+Toms_Chan_Modes.mrc; Tom's Channel Modes
 ; TomCoyote #IamAddictedToIrc on Geekshed irc.geekshed.net 
+; version 1.5
 menu menubar,channel {
-  .$$chan $+ 's Chan Modes $+ $chr(58)   $chan(#).mode
-  ..$iif(# !== $null,(echo) Chan Modes #, ):.mode #
+  $$chan $+ 's Chan Modes $+ $chr(58)   $chan(#).mode 
+  .$iif(# !== $null,(echo) Chan Modes #, ):.mode #
+  .$iif(# !== $null,Link Blocks # From +v(Voiced) down, ):
+  ..$iif((($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv*,$active))) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *www*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *http*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk*,$active)),$style(1)))  $chr(58) $iif((($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv*,$active))) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *www*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *http*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk*,$active)),All On $chr(58) $+ Toggle OFF , Not All On $chr(58) $+ Toggle ON)) $chr(58) : { if ((($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv*,$active))) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *www*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *http*,$active)) && ($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk*,$active))) { .decool $active } | else { .cool $active } }
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tv* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ * $+ $chr(58) $+ //* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.ru* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.info* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.fm* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *www*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *www*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *www* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *www* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.co.uk* Not Blocked)   :.
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.org* Not Blocked)   :.  
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.net* Not Blocked)   :.  
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.com* Not Blocked)   :.  
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *http*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *http*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *http* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *http* Not Blocked)   :.  
+  ..$iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk*,$active),$style(1)) $iif($baninchannel(~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk*,$active),~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk* Blocked,~T $+ $chr(58) $+ block $+ $chr(58) $+ *.tk* Not Blocked)   :.  
+  .-
   ..$iif(c isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((c isincs $gettok($chan(#).mode,1,32)),+c $+($chr(9829),$chr(9829)),-c $+($chr(9830),$chr(9674)))) No Colors:{ if (c isincs $gettok($chan(#).mode,1,32)) { mode # -c } | else { mode # +c } }
   ..$iif(i isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((i isincs $gettok($chan(#).mode,1,32)),+i $+($chr(9829),$chr(9829)),-i $+($chr(9830),$chr(9674)))) Invite Only:{ if (i isincs $gettok($chan(#).mode,1,32)) { mode # -i } | else { mode # +i } }
   ..$iif(j isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((j isincs $gettok($chan(#).mode,1,32)),+j $+($chr(9829),$chr(9829)),-j $+($chr(9830),$chr(9674)))) Throttle Joins:{ if (j isincs $gettok($chan(#).mode,1,32)) { mode # -j } | else { mode # +j $$?="Please enter Total Joins and second's in <join:seconds> format:" } }
@@ -27,15 +43,20 @@ menu menubar,channel {
   ..$iif(T isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((T isincs $gettok($chan(#).mode,1,32)),+T $+($chr(9829),$chr(9829)),-T $+($chr(9830),$chr(9674)))) No Notices In The Channel:{ if (T isincs $gettok($chan(#).mode,1,32)) { mode # -T } | else { mode # +T } }
   ..$iif(V isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((V isincs $gettok($chan(#).mode,1,32)),+V $+($chr(9829),$chr(9829)),-V $+($chr(9830),$chr(9674)))) No Invites In The channel:{ if (V isincs $gettok($chan(#).mode,1,32)) { mode # -V } | else { mode # +V } }
   ..$iif(u isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((u isincs $gettok($chan(#).mode,1,32)),+u $+($chr(9829),$chr(9829)),-u $+($chr(9830),$chr(9674)))) Auditorium Mode:{ if (u isincs $gettok($chan(#).mode,1,32)) { mode # -u } | else { mode # +u } }
-  ..$iif(f isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((f isincs $gettok($chan(#).mode,1,32)),+f $+($chr(9829),$chr(9829)),-f $+($chr(9830),$chr(9674)))) Flood Protection:{ if (f isincs $gettok($chan(#).mode,1,32)) { mode # -f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } | else { mode # +f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } }
+  ..$iif(f isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((f isincs $gettok($chan(#).mode,1,32)),+f $+($chr(9829),$chr(9829)),-f $+($chr(9830),$chr(9674)))) Flood Protection:{ if (f isincs $gettok($chan(#).mode,1,32)) { mode # -f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } | else { mode # +f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } } 
+  . -
+  ; ----
   .Flood Protect:
   ..$iif(f isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((f isincs $gettok($chan(#).mode,1,32)),+f $+($chr(9829),$chr(9829)),-f $+($chr(9830),$chr(9674)))) Flood Protection Mlock:{ /cs SET # MLOCK -f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } | else { /cs SET # MLOCK +f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 }
   ..$iif(f isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((f isincs $gettok($chan(#).mode,1,32)),+f $+($chr(9829),$chr(9829)),-f $+($chr(9830),$chr(9674)))) Flood Protection Temp:{ /mode # -f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 } | else { /mode # +f [6j#R3,2k#K3,7m#M3,5n#N3,6t]:5 }
   .Mlock Your Own +or-MRSn <etc>:/cs SET # MLOCK $input(Enter Modes you want to MLOCK as in +m-S etc,e,MLOCK)
   .Blocking:
+  .. FIndban (Search exact match):echo -a $findban( $+  $$?="Enter Ban to search for : (e.g. *!*@someone.com) or (e.g. ~T:block:*.tv*)" $+ ) 
   ..Tblock:.timer 1 2 /mode $chan +b ~T:Block: $+ $input(Enter Text To Block Add * to front and back of word to catch anywhere in text,e,Tblock)
   ..TCensor:.timer 1 2 /mode $chan +b ~T:censor: $+ $input(Enter Text To Block Add * to front and back of word to catch anywhere in text,e,TCensor)
   ..Channel Block:.timer 1 2 /mode $chan +b ~c: $+ $input(Enter channel To Block,e,Cblock)
+  ; /cool $$?="Enter Channel Name to set blocks on $crlf $+ ( this will set 12 items in your channel ban list, $crlf $+ make sure you have the room) : (e.g. #TheShed)" 
+  ; ...Off:/decool $$?="Enter Channel Name to Remove blocks on  : (e.g. #TheShed)" 
   .-
   .Botnet 10 minute timers :
   ..$iif(((M isincs $gettok($chan(#).mode,1,32)) || (R isincs $gettok($chan(#).mode,1,32)) || (N isincs $gettok($chan(#).mode,1,32)) || (i isincs $gettok($chan(#).mode,1,32))),$style(1)) $iif(((M isincs $gettok($chan(#).mode,1,32)) && (R isincs $gettok($chan(#).mode,1,32)) && (N isincs $gettok($chan(#).mode,1,32)) && (i isincs $gettok($chan(#).mode,1,32))), -MRNi $+($chr(9830),$chr(9674)),Botnet Fix Set +MRNi $+($chr(9829),$chr(9829)))) :{ if ((M isincs $gettok($chan(#).mode,1,32)) && (R isincs $gettok($chan(#).mode,1,32)) && (N isincs $gettok($chan(#).mode,1,32)) && (i isincs $gettok($chan(#).mode,1,32)))  {  /mode # -MRNi | /timer $+ $server $+ # $+ MRNi off } | else { /mode # +MRNi | /timer $+ $server $+ # $+ MRNi 1 600 /mode # -MRNi } }
@@ -49,5 +70,26 @@ menu menubar,channel {
   ..$iif(N isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((N isincs $gettok($chan(#).mode,1,32)), -N $+($chr(9830),$chr(9674)),Botnet Fix Set +N $+($chr(9829),$chr(9829)))) :{ if (N isincs $gettok($chan(#).mode,1,32)) { /mode # -N | /timer $+ $server $+ # $+ N off } | else { /mode # +N | /timer $+ $server $+ # $+ N 1 600 /mode # -N } }
   ..-
   ..$iif(i isincs $gettok($chan(#).mode,1,32),$style(1)) $iif((i isincs $gettok($chan(#).mode,1,32)), -i $+($chr(9830),$chr(9674)),Botnet Fix Set +i $+($chr(9829),$chr(9829)))):{ if (i isincs $gettok($chan(#).mode,1,32)) { /mode # -i | /timer $+ $server $+ # $+ i off } | else { /mode # +i | /timer $+ $server $+ # $+ i 1 600 /mode # -i } }
-
 }
+on 1:join:#: { if ($nick == $me) { .mode # +b } }
+
+alias findban { var %mask $1 | if ($regsubex(loopallchannels,$str(.,$chan(0)),/./g,$baninchannel(%mask,$chan(\n)) $+ $chr(32))) { return $v1 } }
+alias baninchannel { var %mask $1, %chan $2 | if ($regsubex(checkchanbans,$str(.,$ibl(%chan,0)),/./g,$iif($ibl(%chan,\n) == %mask,.,))) { return %chan } }
+; e.g. $findban(*!*@i.am.addicted.to.irc) 
+alias cool { 
+  if ($1 ischan) { set %cool.chan $1 }
+  if ($1 !ischan) {
+    echo -a 7This command must be used for a CHANNEL not a name, use # 
+    halt
+  }
+  .timer1 1 1 .mode %cool.chan +bbbbbbbbbbbb ~T:block:*://* ~T:block:*.ru* ~T:block:*.info* ~T:block:*.fm* ~T:block:*.tv* ~T:block:*www* ~T:block:*.co.uk* ~T:block:*.org* ~T:block:*.net* ~T:block:*.com* ~T:block:*http* ~T:block:*.tk*
+}
+alias decool { 
+  if ($1 ischan) { set %decool.chan $1 }
+  if ($1 !ischan) {
+    echo -a 7This command must be used for a CHANNEL not a name, use # 
+    halt
+  }
+  .timer1 1 1 .mode %decool.chan -bbbbbbbbbbbb ~T:block:*://* ~T:block:*.ru* ~T:block:*.info* ~T:block:*.fm* ~T:block:*.tv* ~T:block:*www* ~T:block:*.co.uk* ~T:block:*.org* ~T:block:*.net* ~T:block:*.com* ~T:block:*http* ~T:block:*.tk*
+}
+; -- Thanks to Kin & Peer for the help with a couple of alias
