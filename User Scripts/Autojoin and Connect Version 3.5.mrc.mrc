@@ -21,18 +21,18 @@ dialog ajoin_dia1 {
 
 dialog ajoin_dia2 {
   title "mIRC AutoJoin/Connect by Danneh"
-  size -1 -1 119 143
+  size -1 -1 119 180
   option dbu
   text "Network:", 1, 3 3 22 8
   text "Server:", 2, 3 14 18 8
   text "Nickname:", 3, 3 36 25 8
   text "NickServ Pass:", 4, 3 47 35 8
   text "Channels:", 5, 3 58 24 8
-  check "Auto Identify?", 6, 3 105 50 10
-  check "Autojoin Channels?", 7, 3 115 58 10
-  button "Add", 8, 3 128 37 12
-  button "Ok", 9, 41 128 37 12
-  button "Cancel", 10, 79 128 37 12
+  check "Auto Identify?", 6, 3 140 50 10
+  check "Autojoin Channels?", 7, 3 152 58 10
+  button "Add", 8, 3 165 37 12
+  button "Ok", 9, 41 165 37 12
+  button "Cancel", 10, 79 165 37 12
   edit "", 11, 44 2 73 10
   edit "", 12, 44 13 73 10, autohs
   edit "", 13, 44 35 73 10
@@ -41,10 +41,15 @@ dialog ajoin_dia2 {
   check "Do you have an oline on this Network?", 16, 3 69 114 10
   text "Oper UID:", 17, 3 82 25 8, hide
   edit "", 18, 43 81 73 10, hide autohs
-  text "Oper Password:", 19, 3 94 39 8, hide pass
+  text "Oper Password:", 19, 3 94 39 8, hide
   edit "", 20, 43 93 73 10, hide pass autohs
   text "Port Number:", 21, 3 25 32 8
-  edit "", 22, 44 24 73 10
+  edit "", 22, 44 24 73 10, autohs
+  check "Are you using a ZNC for the Connection?", 23, 3 105 114 10
+  text "ZNC User/Net:", 24, 3 118 35 8, hide
+  edit "", 25, 43 117 73 10, hide autohs
+  text "ZNC Password:", 26, 3 130 37 8, hide
+  edit "", 27, 43 129 73 10, hide pass autohs
 }
 
 
@@ -53,7 +58,7 @@ dialog ajoin_dia3 {
   size -1 -1 119 61
   option dbu
   button "Ok", 2, 41 46 37 12
-  text "This mIRC AutoJoin/Connect Dialog is the creation of Danneh, This is version 3 of the script.. If you can see anything that you would like to see improved within the script.. Please either join irc.GeekShed.net channel: #ReaperCon or leave a message on the GeekShed forums.", 1, 3 3 113 40, center
+  text "This mIRC AutoJoin/Connect Dialog is the creation of Danneh, This is version 3 of the script.. If you can see anything that you would like to see improved within the script.. Please either join irc.GeekShed.net channel: #ReaperCon or #Hell.", 1, 3 3 113 40, center
 }
 
 on *:DIALOG:ajoin_dia1:menu:2,11: {
@@ -87,7 +92,7 @@ on *:DIALOG:ajoin_dia1:sclick:4-6: {
       set -u10 %ajoinnetsetup $did($dname,8).sel
       dialog -x ajoin_dia1 ajoin_dia1
       $dialogopen(ajoin_dia2)
-      did -ra ajoin_dia2 8 Edit
+      did -ra ajoin_dia2 8 Save Edit
       did -a ajoin_dia2 11 $ini(autojoin.ini,networks,%ajoinnetsetup)
       did -a ajoin_dia2 12 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),server)
       did -a ajoin_dia2 13 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),nick)
@@ -102,6 +107,12 @@ on *:DIALOG:ajoin_dia1:sclick:4-6: {
         did -a ajoin_dia2 18 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),UID)
         did -a ajoin_dia2 20 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),operpass)
       }
+      if ($readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),ZNCConn) == on) {
+        did -c ajoin_dia2 23
+        did -v ajoin_dia2 24-27
+        did -a ajoin_dia2 25 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),ZNCUser)
+        did -a ajoin_dia2 27 $readini(autojoin.ini,$ini(autojoin.ini,networks,%ajoinnetsetup),ZNCPass)
+      }
     }
   }
   if ($did == 6) {
@@ -113,7 +124,7 @@ on *:DIALOG:ajoin_dia1:sclick:4-6: {
   }
 }
 
-on *:DIALOG:ajoin_dia2:sclick:8-10,16: {
+on *:DIALOG:ajoin_dia2:sclick:8-10,16,23: {
   if ($did == 8) {
     if (!$did(11).text) || (!$did(12).text) || (!$did(13).text) || (!$did(14).text) || (!$did(15).text) { noop $input(Please fill in all needed information.,o) }
     else {
@@ -127,12 +138,20 @@ on *:DIALOG:ajoin_dia2:sclick:8-10,16: {
         writeini -n autojoin.ini $did(11).text aidentify $iif($did($dname,6).state == 1,on,off)
         writeini -n autojoin.ini $did(11).text ajoin $iif($did($dname,7).state == 1,on,off)
         writeini -n autojoin.ini $did(11).text oline $iif($did($dname,16).state == 1,on,off)
+        writeini -n autojoin.ini $did(11).text ZNCConn $iif($did($dname,23).state == 1,on,off)
         writeini -n autojoin.ini $did(11).text portnum $iif($did(22).text == $null,6667,$did(22).text)
         if ($did($dname,16).state == 1) {
           if ($did(18).text == $null) || ($did(20).text == $null) { noop $input(Please enter a UID and Password for your Oper!,o,Error!) }
           else {
             writeini -n autojoin.ini $did(11).text UID $did(18).text
             writeini -n autojoin.ini $did(11).text operpass $did(20).text
+          }
+        }
+        if ($did($dname,23).state == 1) {
+          if ($did(25).text == $null) || ($did(27).text == $null) { noop $input(Please enter Connection Information for your ZNC! $chr(91) $+ Example: User/Net: GrimReaper/DalNet Password: S0m3Cr4zyP455 $+ $chr(93),o,Error!) }
+          else {
+            writeini -n autojoin.ini $did(11).text ZNCUser $did(25).text
+            writeini -n autojoin.ini $did(11).text ZNCPass $did(27).text
           }
         }
         dialog -x ajoin_dia2 ajoin_dia2
@@ -149,12 +168,20 @@ on *:DIALOG:ajoin_dia2:sclick:8-10,16: {
         writeini autojoin.ini $did(11).text aidentify $iif($did($dname,6).state == 1,on,off)
         writeini autojoin.ini $did(11).text ajoin $iif($did($dname,7).state == 1,on,off)
         writeini autojoin.ini $did(11).text oline $iif($did($dname,16).state == 1,on,off)
+        writeini autojoin.ini $did(11).text ZNCConn $iif($did($dname,23).state == 1,on,off)
         writeini autojoin.ini $did(11).text portnum $iif($did(22).text == $null,6667,$did(22).text)
         if ($did($dname,16).state == 1) {
           if ($did(18).text == $null) || ($did(20).text == $null) { noop $input(Please enter a UID and Password for your Oper!,o,Error!) }
           else {
             writeini autojoin.ini $did(11).text UID $did(18).text
             writeini autojoin.ini $did(11).text operpass $did(20).text
+          }
+        }
+        if ($did($dname,23).state == 1) {
+          if ($did(25).text == $null) || ($did(27).text == $null) { noop $input(Please enter Connection Information for your ZNC! $chr(91) $+ Example: User/Net: GrimReaper/DalNet Password: S0m3Cr4zyP455 $+ $chr(93),o,Error!) }
+          else {
+            writeini autojoin.ini $did(11).text ZNCUser $did(25).text
+            writeini autojoin.ini $did(11).text ZNCPass $did(27).text
           }
         }
         dialog -x ajoin_dia2 ajoin_dia2
@@ -170,6 +197,10 @@ on *:DIALOG:ajoin_dia2:sclick:8-10,16: {
     if ($did(16).state == 0) { did -h $dname 17-20 }
     if ($did(16).state == 1) { did -v $dname 17-20 }
   }
+  if ($did == 23) {
+    if ($did(23).state == 0) { did -h ajoin_dia2 24-27 }
+    if ($did(23).state == 1) { did -v ajoin_dia2 24-27 }
+  }
 }
 
 on *:DIALOG:ajoin_dia1:mouse:*: {
@@ -183,7 +214,7 @@ on *:START: {
   if ($ini(autojoin.ini,networks,0)) {
     var %a = 1, %z $ini(autojoin.ini,networks,0)
     while (%a <= %z) {
-      $iif(%a == 1,server,server -m) $+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),portnum))
+      $iif(%a == 1,server,server -m) $+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),portnum)) $iif($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCConn) == on,$+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCUser),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCPass)))
       inc %a
     }
   }
@@ -197,8 +228,7 @@ on *:CONNECT: {
     }
   }
 }
-
-; Anope Autojoin Identify
+; Anope Services 1
 on *:NOTICE:*This nickname is registered and protected.*:?:{
   if ($nick == NickServ) {
     if ($readini(autojoin.ini,$network,aidentify) == on) {
@@ -206,8 +236,15 @@ on *:NOTICE:*This nickname is registered and protected.*:?:{
     }
   }
 }
-
-; Atheme Autojoin Identify
+; Anope Services 2
+on *:NOTICE:*This nick is owned by someone else. Please choose another.*:?:{
+  if ($nick == NickServ) {
+    if ($readini(autojoin.ini,$network,aidentify) == on) {
+      .msg NickServ identify $readini(autojoin.ini,$network,password)
+    }
+  }
+}
+; Atheme Services
 on *:NOTICE:*This nickname is registered. Please choose a different nickname*:?:{
   if ($nick == NickServ) {
     if ($readini(autojoin.ini,$network,aidentify) == on) {
@@ -215,7 +252,6 @@ on *:NOTICE:*This nickname is registered. Please choose a different nickname*:?:
     }
   }
 }
-
 
 on *:NOTICE:*Password accepted*:?:{ 
   if ($nick == NickServ) { 
@@ -234,3 +270,4 @@ RAW 433:*:{
 
 alias -l autojoinv3 { $iif($dialog(ajoin_dia1),dialog -v,dialog -m) ajoin_dia1 ajoin_dia1 }
 alias -l dialogopen { dialog $iif($dialog($1),-v,-m $1) $1 }
+alias ajoin { return $readini(autojoin.ini,$network,$1) }
