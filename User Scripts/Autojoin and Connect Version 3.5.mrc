@@ -1,5 +1,5 @@
 menu channel,status,menubar,nicklist {
-  AutoJoin/Connect V 3.0:autojoinv3
+  AutoJoin/Connect V 3.5:autojoinv3
 }
 
 dialog ajoin_dia1 {
@@ -58,7 +58,7 @@ dialog ajoin_dia3 {
   size -1 -1 119 61
   option dbu
   button "Ok", 2, 41 46 37 12
-  text "This mIRC AutoJoin/Connect Dialog is the creation of Danneh, This is version 3 of the script.. If you can see anything that you would like to see improved within the script.. Please either join irc.GeekShed.net channel: #ReaperCon or #Hell.", 1, 3 3 113 40, center
+  text "This mIRC AutoJoin/Connect Dialog is the creation of Danneh, This is version 3.5 of the script.. If you can see anything that you would like to see improved within the script.. Please either join irc.GeekShed.net channel: #ReaperCon or #Hell.", 1, 3 3 113 40, center
 }
 
 on *:DIALOG:ajoin_dia1:menu:2,11: {
