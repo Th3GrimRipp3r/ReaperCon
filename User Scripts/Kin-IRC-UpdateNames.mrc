@@ -1,3 +1,7 @@
+; Kin's Identifier to find channels that require an internal address list update,
+; and a command to send the /names command on a timer to those channels.
+; Useful after ZNC/BNC reconnection.
+
 ; 2014-03-11 v1.1 Add configuration options, and general cleanup
 ; 2014-03-11 v1.0 
 
