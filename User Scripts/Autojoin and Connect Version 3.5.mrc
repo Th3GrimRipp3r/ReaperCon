@@ -264,7 +264,11 @@ on *:NOTICE:*Password accepted*:?:{
 RAW 433:*:{ 
   if ($2 == $readini(autojoin.ini,$network,nick)) {
     .msg NickServ GHOST $2 $readini(autojoin.ini,$network,password)
-    .timer 1 1 nick $readini(autojoin.ini,$network,nick)
+    var %token $network $+ $readini(autojoin.ini,$network,nick)
+    if (!$istok(%AJoinNick,%token,32)) {
+      .timer 1 1 nick $readini(autojoin.ini,$network,nick)
+    }
+    set -eu20 %AJoinNick $addtok(%AJoinNick,%token,32)
   }
 }
 
