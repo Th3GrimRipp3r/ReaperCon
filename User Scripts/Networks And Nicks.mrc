@@ -14,9 +14,7 @@ alias nets {
         %out = %out 7As:4 $scon(%ctr).me $+ 
       }
       else {
-        if ($scon(%ctr).NetworkOrServer) {
-          %out = %out 7Currently not connected to:4 $v1 $+ .
-        }
+        %out = %out 7Currently not connected to:4 $v1 $+ .
       }
       if (%out) { say 3* %out }
     }
