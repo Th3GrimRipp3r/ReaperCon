@@ -14,114 +14,139 @@ n *:TEXT:!*:#: {
       }
     }
     if ($1 == !topic) {
-      if ($readini(Topics.ini,chan,update) == on) {
+      if ($topini(update) == on) {
         if (!$ini(Topics.ini,$chan,topic)) {
           writeini Topics.ini $chan topic $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan topic $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
       else {
         if (!$ini(Topics.ini,$chan,topic)) {
           writeini Topics.ini $chan topic $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan topic $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
     }
     if ($1 == !divider) {
-      if ($readini(Topics.ini,chan,update) == on) {
+      if ($topini(update) == on) {
         if (!$ini(Topics.ini,$chan,divider)) {
           writeini Topics.ini $chan divider $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan divider $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
       else {
         if (!$ini(Topics.ini,$chan,divider)) {
           writeini Topics.ini $chan divider $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan divider $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
     }
     if ($1 == !owner) {
-      if ($readini(Topics.ini,chan,update) == on) {
+      if ($topini(update) == on) {
         if (!$ini(Topics.ini,$chan,owner)) {
           writeini Topics.ini $chan owner $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan owner $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
       else {
         if (!$ini(Topics.ini,$chan,owner)) {
           writeini Topics.ini $chan owner $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan owner $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
+        }
+      }
+    }
+	if ($1 == !verb) {
+      if ($topini(update) == on) {
+        if (!$ini(Topics.ini,$chan,verb)) {
+          writeini Topics.ini $chan verb $2-
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
+        }
+        else {
+          writeini -n Topics.ini $chan verb $2-
+          scon -a topic $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
+        }
+      }
+      else {
+        if (!$ini(Topics.ini,$chan,verb)) {
+          writeini Topics.ini $chan verb $2-
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
+        }
+        else {
+          writeini -n Topics.ini $chan verb $2-
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
     }
     if ($1 == !status) {
-      if ($readini(Topics.ini,chan,update) == on) {
+      if ($topini(update) == on) {
         if (!$ini(Topics.ini,$chan,status)) {
           writeini Topics.ini $chan status $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan status $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
       else {
         if (!$ini(Topics.ini,$chan,status)) {
           writeini Topics.ini $chan status $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan status $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
     }
     if ($1 == !static) {
-      if ($readini(Topics.ini,chan,update) == on) {
+      if ($topini(update) == on) {
         if (!$ini(Topics.ini,$chan,static)) {
           writeini Topics.ini $chan static $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan static $2-
-          scon -a topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
       else {
         if (!$ini(Topics.ini,$chan,static)) {
           writeini Topics.ini $chan static $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
         else {
           writeini -n Topics.ini $chan static $2-
-          topic $chan $readini(Topics.ini,$chan,topic) $chan $readini(Topics.ini,$chan,divider) $readini(Topics.ini,$chan,owner) $chan $readini(Topics.ini,$chan,verb) $chan $readini(Topics.ini,$chan,status) $chan $readini(Topics.ini,$chan,divider) $chan $readini(Topics.ini,$chan,static)
+          topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
     }
   }
+}
+alias -l topini {
+  return $readini(Topics.ini,$chan,$1)
 }
