@@ -1,6 +1,6 @@
-on *:TEXT:!*:#: {
+on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
   if ($nick isop $chan) {
-    if ($1 == !update) {
+    if ($regml(1) == !update) {
       if ($2 != on) || ($2 != off) { msg $chan Please select whether you'd like to update all networks or single networks, !update on/off }
       else {
         if (!$ini(Topics.ini,$chan,update)) {
@@ -13,8 +13,8 @@ on *:TEXT:!*:#: {
         }  
       }
     }
-    if ($1 == !topic) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !topic) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,topic)) {
           writeini Topics.ini $chan topic $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -35,8 +35,8 @@ on *:TEXT:!*:#: {
         }
       }
     }
-    if ($1 == !divider) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !divider) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,divider)) {
           writeini Topics.ini $chan divider $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -57,8 +57,8 @@ on *:TEXT:!*:#: {
         }
       }
     }
-    if ($1 == !owner) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !owner) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,owner)) {
           writeini Topics.ini $chan owner $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -79,8 +79,8 @@ on *:TEXT:!*:#: {
         }
       }
     }
-	if ($1 == !verb) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !verb) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,verb)) {
           writeini Topics.ini $chan verb $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -90,7 +90,7 @@ on *:TEXT:!*:#: {
           scon -a topic $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
-	  else {
+      else {
         if (!$ini(Topics.ini,$chan,verb)) {
           writeini Topics.ini $chan verb $2-
           topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -101,8 +101,8 @@ on *:TEXT:!*:#: {
         }
       }
     }
-    if ($1 == !status) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !status) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,status)) {
           writeini Topics.ini $chan status $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
@@ -123,8 +123,8 @@ on *:TEXT:!*:#: {
         }
       }
     }
-    if ($1 == !static) {
-      if ($topini(update) == on) {
+    if ($regml(1) == !static) {
+      if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,static)) {
           writeini Topics.ini $chan static $2-
           scon -a topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
