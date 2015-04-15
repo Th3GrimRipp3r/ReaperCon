@@ -1,6 +1,6 @@
 on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
   if ($nick isop $chan) {
-    if ($regml(1) == !update) {
+    if ($regml(1) == update) {
       if ($2 != on) || ($2 != off) { msg $chan Please select whether you'd like to update all networks or single networks, !update on/off }
       else {
         if (!$ini(Topics.ini,$chan,update)) {
@@ -13,7 +13,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }  
       }
     }
-    if ($regml(1) == !topic) {
+    if ($regml(1) == topic) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,topic)) {
           writeini Topics.ini $chan topic $2-
@@ -35,7 +35,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }
       }
     }
-    if ($regml(1) == !divider) {
+    if ($regml(1) == divider) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,divider)) {
           writeini Topics.ini $chan divider $2-
@@ -57,7 +57,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }
       }
     }
-    if ($regml(1) == !owner) {
+    if ($regml(1) == owner) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,owner)) {
           writeini Topics.ini $chan owner $2-
@@ -79,7 +79,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }
       }
     }
-    if ($regml(1) == !verb) {
+    if ($regml(1) == verb) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,verb)) {
           writeini Topics.ini $chan verb $2-
@@ -101,7 +101,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }
       }
     }
-    if ($regml(1) == !status) {
+    if ($regml(1) == status) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,status)) {
           writeini Topics.ini $chan status $2-
@@ -123,7 +123,7 @@ on $*:TEXT:^/!(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
         }
       }
     }
-    if ($regml(1) == !static) {
+    if ($regml(1) == static) {
       if ($readini(Topics.ini,$chan,update) == on) {
         if (!$ini(Topics.ini,$chan,static)) {
           writeini Topics.ini $chan static $2-
