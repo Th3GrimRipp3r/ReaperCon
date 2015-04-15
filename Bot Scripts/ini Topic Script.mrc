@@ -1,4 +1,4 @@
-n *:TEXT:!*:#: {
+on *:TEXT:!*:#: {
   if ($nick isop $chan) {
     if ($1 == !update) {
       if ($2 != on) || ($2 != off) { msg $chan Please select whether you'd like to update all networks or single networks, !update on/off }
