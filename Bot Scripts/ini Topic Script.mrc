@@ -90,7 +90,7 @@ on *:TEXT:!*:#: {
           scon -a topic $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
         }
       }
-      else {
+	  else {
         if (!$ini(Topics.ini,$chan,verb)) {
           writeini Topics.ini $chan verb $2-
           topic $chan $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
