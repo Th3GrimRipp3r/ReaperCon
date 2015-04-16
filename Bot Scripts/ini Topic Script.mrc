@@ -1,4 +1,4 @@
-on $*:TEXT:/\.(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
+on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
   if ($nick !isop $chan) { return }
 
   var %item $regml(1)
