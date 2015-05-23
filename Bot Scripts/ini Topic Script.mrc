@@ -1,17 +1,35 @@
-on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static)( |$)/Si:#: {
+on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static|prepend)( |$)/Si:#: {
   if ($nick !isop $chan) { return }
 
   var %item $regml(1)
 
   if (%item == update) {
     if ($2 != on) && ($2 != off) {
-      msg $chan Please select whether you'd like to update all networks or single networks, !update on/off
+      msg $chan Please select whether you'd like to update all networks or single networks, !update on/off.
     }
     else {
       writeini -n Topics.ini $chan %item $2
       msg $chan I will $iif($2 == on,now,not) update all channel topics.
     }
     return
+  }
+  
+  if (%item == prepend) {
+    if ($2 != on) && ($2 != off) ($2 != custom) {
+	  msg $chan Please select whether you'd like to have the Prepend "Topic:" on or off, !prepend on/off/custom.
+	}
+	elseif ($2 == on) {
+	  writeini -n Topics.ini $chan %item Topic:
+	}
+	elseif ($2 == off) {
+	  remini Topics.ini $chan %item
+	}
+	elseif ($2 == custom) {
+	  if (!$3) { msg $chan Please enter a custom Prepend you would like to use.. !prepend custom <custom prepend>.
+	  else {
+	    writeini -n Topics.ini $chan %item $3-
+      }
+	}
   }
 
   ; The remaining commands update one of the items in topics.ini
