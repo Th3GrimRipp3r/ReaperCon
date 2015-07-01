@@ -214,13 +214,14 @@ on *:START: {
   if ($ini(autojoin.ini,networks,0)) {
     var %a = 1, %z $ini(autojoin.ini,networks,0)
     while (%a <= %z) {
-      $iif(%a == 1,server,server -m) $+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),portnum)) $iif($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCConn) == on,$+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCUser),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCPass)))
+      $iif(%a == 1,server,server -m) $iif($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server) != irc.twitch.tv,$+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),portnum)) $iif($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCConn) == on,$+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCUser),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),ZNCPass))),$+($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),server),:,$readini(autojoin.ini,$ini(autojoin.ini,networks,%a),portnum)) $readini(autojoin.ini,$ini(autojoin.ini,networks,%a),password) -i $readini(autojoin.ini,$ini(autojoin.ini,networks,%a),nick) -j $lower($readini(autojoin.ini,$ini(autojoin.ini,networks,%a),channels)))
       inc %a
     }
   }
 }
 
 on *:CONNECT: {
+  if ($server == tmi.twitch.tv) { .raw CAP REQ :twitch.tv/membership twitch.tv/commands }
   if ($ini(autojoin.ini,networks,$network)) { 
     nick $readini(autojoin.ini,$network,nick)
     if ($readini(autojoin.ini,$network,oline) == on) {
