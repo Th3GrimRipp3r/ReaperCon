@@ -15,7 +15,7 @@ on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static|prepend)( |$)/Si:#
   }
 
   if (%item == prepend) {
-    if ($2 != on) && ($2 != off) ($2 != custom) {
+    if (!$istok(on|off|custom,$2,124)) {
       msg $chan Please select whether you'd like to have the Prepend "Topic:" on or off, !prepend on/off/custom.
     }
     elseif ($2 == on) {
@@ -49,7 +49,7 @@ on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static|prepend)( |$)/Si:#
   }
 
   ; Perform the topic command
-  %cmd $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
+  %cmd $topini(prepend) $topini(topic) $topini(divider) $topini(owner) $topini(verb) $topini(status) $topini(divider) $topini(static)
 }
 
 alias -l topini {
