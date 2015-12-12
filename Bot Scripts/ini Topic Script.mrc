@@ -1,4 +1,4 @@
-on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static|prepend)( |$)/Si:#heiwujs: {
+on $*:TEXT:/^\.(update|topic|divider|owner|verb|status|static|prepend)( |$)/Si:#: {
   if ($nick !isop $chan) { return }
 
   var %item $regml(1)
