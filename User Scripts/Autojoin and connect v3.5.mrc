@@ -1,3 +1,12 @@
+::::::::::::::::::::::::::::::::::::::::::
+:: Obnoxious AutoJoin / Identify Script ::
+:: Created by GrimReaper                ::
+:: (No one else wants to take credit    ::
+:: for this monster)                    ::
+:: Reapercon Repository                 ::
+:: All Rights Reserved                  ::
+::::::::::::::::::::::::::::::::::::::::::
+
 menu channel,status,menubar,nicklist {
   AutoJoin/Connect V 3.5:autojoinv3
 }
