@@ -1,3 +1,14 @@
+:::::::::::::::::::::::::::::::::::::::::::::::
+:: All Channel Nick Kicker                   ::
+:: By the Reapercon Repository               ::
+:: Gives a user the ability to kick another  ::
+:: user with sharing channels.               ::
+:: All Rights Reserved                       ::
+:::::::::::::::::::::::::::::::::::::::::::::::
+
+Ideas:
+1. Add switch to turn off to prevent accidental use.
+
 alias kickall {
   var %n = 1, %b = $comchan($$1,0)
   while (%n <= %b) {
