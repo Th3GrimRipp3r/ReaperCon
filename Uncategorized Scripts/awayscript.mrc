@@ -1,3 +1,16 @@
+:::::::::::::::::::::::::::
+:: Away Script           ::
+:: Created by GrimReaper ::
+:: Concept by Zetacon    ::
+:: Reapercon Repository  ::
+:: All Rights Reserved   ::
+:::::::::::::::::::::::::::
+
+Ideas:
+1. Provide on/off switches to the script to prevent accidental use.
+2. Provide a text file that gives the channel and the message, written on a single line.
+
+
 alias away {
   if (!$1) { echo -a Invalid Command. Please try again. | HALT }
   if ($1 == back) {
