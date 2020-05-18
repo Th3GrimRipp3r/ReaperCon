@@ -4,6 +4,14 @@
 :: All Rights Reserved             ::
 :::::::::::::::::::::::::::::::::::::
 
+Ideas
+1. Provide an on/off switch to prevent misuse.
+2. Insert more synonyms for MJ? I feel like I covered a lot of them, but I could have missed some.
+3. Ability to select the amount of synonyms used. The user can execute /high Xena # and the script can select the number in the list or select random items.
+4. Set this so that it only selects a nick in a channel.
+5. Provide switches to lock it down to a certain channel for customization purposes.
+6. Give the end user the ability to insert more synonyms that can read from a file, etc.
+
 alias high {
   if ($1 == Xena) {
     .timer 1 1 describe $chan gives $1 a bong.
