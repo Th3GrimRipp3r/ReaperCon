@@ -1,4 +1,4 @@
-; Quick Mode Changer/Veiwer by TomCoyote ( Tom Coyote Wilson aka Coyote` on Geekshed.net IRC network )
+; Quick Mode Changer/Viewer by TomCoyote ( Tom Coyote Wilson aka Coyote` on Geekshed.net IRC network )
 ; http://pastebin.com/xGWA1T5g
 ; Tom's Menu Quick Modes and Information
 
