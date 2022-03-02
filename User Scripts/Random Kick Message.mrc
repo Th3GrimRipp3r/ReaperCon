@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Random Kick message script  ;;
+;; Random Kick Message Script  ;;
 ;; Made by GrimReaper          ;;
 ;; All Rights Reserved         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
