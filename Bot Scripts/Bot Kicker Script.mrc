@@ -24,7 +24,7 @@ on *:TEXT:!botkicker *:#:{
       HALT
     }
     if ($3 == off) {
-      set % [ $+ [ $chan ] $+ ] .botkicker.switch on
+      set % [ $+ [ $chan ] $+ ] .botkicker.switch off
       msg $chan Bot Kicker is now OFF.
       HALT
     }
