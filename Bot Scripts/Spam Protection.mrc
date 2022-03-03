@@ -36,7 +36,7 @@ on owner:TEXT:!srooms:#:{
     msg $chan My Spam Protection is NOT ON in any channels. 
   }
   else { 
-    msg $chan My Spam Protection is ON in %spamchan 
+    msg $chan My Spam Protection is ON in %spamchan $+ .
   }
 }
 
