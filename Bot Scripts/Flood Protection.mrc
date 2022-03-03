@@ -12,7 +12,7 @@ alias owner {
   auser owner $address($1,2) 
 }
 
-on owner:TEXT:!flood*:#:{
+on owner:TEXT:!flood *:#: {
   if (!$3) { 
     msg $chan commands are !flood on #channel / !flood off #channel / !listrooms 
   }
@@ -28,7 +28,7 @@ on owner:TEXT:!flood*:#:{
   }
   elseif ($2 == off) {
     set %floodchan $remtok(%floodchan,$3,1,44)
-    msg $chan My Flood Protection Is Now OFF In Room $3  
+    msg $chan My Flood Protection is now OFF in $3 $+ .  
   }
 }
 
@@ -37,32 +37,48 @@ on owner:TEXT:!listrooms:#:{
     msg $chan My Flood Protection is NOT ON in any channels. 
   }
   else { 
-    msg $chan My Flood Protection is On in the following channels: %floodchan 
+    msg $chan My Flood Protection is ON in the following channels: %floodchan 
   }
 }
 
 on !*:TEXT:*:%floodchan: {
-  if ($nick(#,$nick,oh)) { halt }
+  if ($nick(#,$nick,oh)) { 
+    HALT 
+  }
   else {
     inc -u2 $+(%,flood,.,$chan,.,$nick)
     if ($($+(%,flood,.,$chan,.,$nick),2) >= 5) {
       inc $+(%,floodd,.,$chan,.,$nick) 
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 2) { msg $chan $nick Dont Flood This Room }
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 5) { kick $chan $nick flood Control 1 more time and it's a BAN!! }
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 8) { ban -ku600 # $nick 2 you were warned not to Flood In This Room. | unset $+(%,floodd,.,$chan,.,$nick) }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 2) { 
+	    msg $chan $nick Dont Flood This Room 
+	  }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 5) { 
+	    kick $chan $nick flood Control 1 more time and it's a BAN!! 
+	  }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 8) { 
+	    ban -ku600 # $nick 2 you were warned not to Flood In This Room.
+		unset $+(%,floodd,.,$chan,.,$nick) 
+	  }
     }
   }
 }
 
-on !*:ACTION:*:%protecchan: {
+on !*:ACTION:*:%floodchan: {
   if ($nick(#,$nick,oh)) { halt }
   else {
     inc -u2 $+(%,flood,.,$chan,.,$nick)
     if ($($+(%,flood,.,$chan,.,$nick),2) >= 5) {
       inc $+(%,floodd,.,$chan,.,$nick) 
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 2) { msg $chan $nick Dont Flood This Room }
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 5) { kick $chan $nick flood Control 1 more time and it's a BAN!! }
-      if ($($+(%,floodd,.,$chan,.,$nick),2) == 8) { ban -ku600 # $nick 2 you were warned not to Flood In This Room. | unset $+(%,floodd,.,$chan,.,$nick) }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 2) { 
+	    msg $chan $nick Dont Flood This Room 
+	  }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 5) { 
+	    kick $chan $nick flood Control 1 more time and it's a BAN!! 
+	  }
+      if ($($+(%,floodd,.,$chan,.,$nick),2) == 8) { 
+	    ban -ku600 # $nick 2 you were warned not to Flood In This Room.
+		unset $+(%,floodd,.,$chan,.,$nick) 
+	  }
     }
   }
 }
