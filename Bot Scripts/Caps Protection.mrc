@@ -1,3 +1,13 @@
+::::::::::::::::::::::::::::::::::::::::::::
+:: Caps Protection                        ::
+:: Version 1.0.4                          ::
+:: Written by Napa182                     ::
+:: Modifications by Zetacon               ::
+:: This script uses a three strike system ::
+:: for anyone using excessive caps.       ::
+:: All Rights Reserved.                   ::
+::::::::::::::::::::::::::::::::::::::::::::
+
 on *:TEXT:!caps *:#:{
   if ($nick isop $chan || $nick ishop $chan) {
     if (!$3) { msg $chan commands are !caps on #channel / !caps off #channel / !caps set number / !caps status }
