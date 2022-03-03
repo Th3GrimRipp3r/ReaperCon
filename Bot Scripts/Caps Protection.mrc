@@ -45,9 +45,15 @@ on *:TEXT:*:%capschan: {
       var %percent $calc($regex($1-,/[A-Z]/g)/$len($1-)*100)
       if (%percent > %capskicker) {
         inc $+(%,caps,.,$nick,.,$chan)
-        if ($($+(%,caps,.,$nick,.,$chan),2) == 1) { msg $chan Caps Detected: $nick - The use of caps to speak is strictly forbidden here. $round(%percent,0) $+ % of your message was in caps. }
-        if ($($+(%,caps,.,$nick,.,$chan),2) == 2) { kick $chan $nick Final warning on the use of caps. $round(%percent,0) $+ % of your message was in caps. Next time, it's a ban. } 
-        if ($($+(%,caps,.,$nick,.,$chan),2) == 3) { ban -ku600 # $nick 2 BANNED! The use of caps is strictly forbidden. $round(%percent,0) $+ % of your message was in caps. If you feel this ban is in error, that's just too bad. | unset $+(%,caps,.,$nick,.,$chan) }
+        if ($($+(%,caps,.,$nick,.,$chan),2) == 1) { 
+		  msg $chan Caps Detected: $nick - The use of caps to speak is strictly forbidden here. $round(%percent,0) $+ % of your message was in caps. 
+		}
+        if ($($+(%,caps,.,$nick,.,$chan),2) == 2) { 
+		  kick $chan $nick Final warning on the use of caps. $round(%percent,0) $+ % of your message was in caps. Next time, it's a ban. 
+		} 
+        if ($($+(%,caps,.,$nick,.,$chan),2) == 3) { 
+		  ban -ku600 # $nick 2 BANNED! The use of caps is strictly forbidden. $round(%percent,0) $+ % of your message was in caps. If you feel this ban is in error, that's just too bad. | unset $+(%,caps,.,$nick,.,$chan) 
+		}
       }
     }
   }
