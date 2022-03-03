@@ -11,27 +11,27 @@
 
 alias owner { auser owner $address($1,2) }
 
-on owner:text:!spam*:#:{
+on owner:TEXT:!spam *:#: {
   if (!$3) { msg $chan commands are !spam on #channel / !spam off #channel / !spam set number / !srooms }
   elseif ($2 == on) && ($istok(%spamchan,$3,44)) {
     msg $chan My Spam Protection Is Already On For $3 
   }
   elseif ($2 == on) {
-    set %capschan $addtok(%capschan,$3,44)
+    set %spamchan $addtok(%spamchan,$3,44)
     msg $chan My Spam Protection Is Now ON In $3 
   }
   elseif ($2 == off) && (!$istok(%capschan,$3,44)) {
     msg $chan My Spam Protection Is Already OFF For $3 
   }
   elseif ($2 == off) {
-    set %capschan $remtok(%capschan,$3,1,44)
+    set %spamchan $remtok(%spamchan,$3,1,44)
     msg $chan My Spam Protection Is Now OFF In Room $3  
   }
 }
 
-on owner:text:!crooms:#:{ 
+on owner:TEXT:!crooms:#:{ 
   if (!%capschan) { msg $chan My Spam Protection Is NOT ON In Any Room's }
-  else { msg $chan My Spam Protection Is On In Room's %capschan }
+  else { msg $chan My Spam Protection Is On In Room's %spamchan }
 }
 
 on *:TEXT:*:#: { 
