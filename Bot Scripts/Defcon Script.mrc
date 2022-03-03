@@ -1,9 +1,8 @@
 ::::::::::::::::::::::::::::::::::::::::::
 :: Defcon Script                        ::
-:: Version 1.0.0                        ::
+:: Version 1.0.3                        ::
 :: Written by Zetacon.                  ::
-:: This script is written for the Hooch ::
-:: mIRC bot only.                       ::
+:: A Defcon system for an IRC channel   ::
 :: All Rights Reserved.                 ::
 ::::::::::::::::::::::::::::::::::::::::::
 
