@@ -9,10 +9,12 @@
 :: All Rights Reserved.                  ::
 :::::::::::::::::::::::::::::::::::::::::::
 
-alias owner { auser owner $address($1,2) }
+alias owner { 
+  auser owner $address($1,2) 
+}
 
 on owner:TEXT:!spam *:#: {
-  if (!$3) { msg $chan commands are !spam on #channel / !spam off #channel / !spam set number / !srooms }
+  if (!$3) { msg $chan commands are !spam on #channel / !spam off #channel / !srooms }
   elseif ($2 == on) && ($istok(%spamchan,$3,44)) {
     msg $chan My Spam Protection is already ON for $3 $+ .  
   }
@@ -30,11 +32,11 @@ on owner:TEXT:!spam *:#: {
 }
 
 on owner:TEXT:!crooms:#:{ 
-  if (!%spamchan) { msg $chan My Spam Protection Is NOT ON In Any Room's }
-  else { msg $chan My Spam Protection Is On In Room's %spamchan }
+  if (!%spamchan) { msg $chan My Spam Protection is NOT ON in any channels. }
+  else { msg $chan My Spam Protection is ON in %spamchan }
 }
 
-on *:TEXT:*:#: { 
+on *:TEXT:*:%spamchan: { 
   elseif ($nick($chan,$nick,vr)) {
     if ($regex($strip($1-),/\b(?:http|www|com|org|net)\b/i)) {
 	  inc $+(%,spam,$nick)
