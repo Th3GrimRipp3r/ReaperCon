@@ -14,7 +14,7 @@ alias owner {
 
 on owner:TEXT:!flood *:#: {
   if (!$3) { 
-    msg $chan commands are !flood on #channel / !flood off #channel / !listrooms 
+    msg $chan Commands are !flood on #channel / !flood off #channel / !listrooms 
   }
   elseif ($2 == on) && ($istok(%floodchan,$3,44)) {
     msg $chan My Flood Protection is already ON for $3 $+ . 
