@@ -26,7 +26,7 @@ on *:TEXT:!caps *:#:{
       msg $chan My Caps Protection is now OFF in $3 $+ .
     }
     elseif ($2 == set) {
-      set % [ $+ [ $chan ] $+ ] .capskicker $3
+      set %capskicker $3
       msg $chan Caps Protection: Warn/Kick/Ban now set for $3 $+ % Caps.
     }
     elseif ($2 == status) {
@@ -37,13 +37,13 @@ on *:TEXT:!caps *:#:{
 }
 
 on *:TEXT:*:%capschan: {
-  if ($nick isop $chan || $nick ishop $chan) { HALT }
-  if ($nick == Zetacon) { HALT }
-  if ($nick == GrimReaper) { HALT }
+  if ($nick isop $chan || $nick ishop $chan) { 
+    HALT 
+  }
   else {
     if ($nick(#,$nick,vr)) && ($len($1-) > 5) {
       var %percent $calc($regex($1-,/[A-Z]/g)/$len($1-)*100)
-      if (%percent > %caps) {
+      if (%percent > %capskicker) {
         inc $+(%,caps,.,$nick,.,$chan)
         if ($($+(%,caps,.,$nick,.,$chan),2) == 1) { msg $chan Caps Detected: $nick - The use of caps to speak is strictly forbidden here. $round(%percent,0) $+ % of your message was in caps. }
         if ($($+(%,caps,.,$nick,.,$chan),2) == 2) { kick $chan $nick Final warning on the use of caps. $round(%percent,0) $+ % of your message was in caps. Next time, it's a ban. } 
