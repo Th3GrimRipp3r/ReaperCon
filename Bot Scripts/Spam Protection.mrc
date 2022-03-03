@@ -31,9 +31,13 @@ on owner:TEXT:!spam *:#: {
   }
 }
 
-on owner:TEXT:!crooms:#:{ 
-  if (!%spamchan) { msg $chan My Spam Protection is NOT ON in any channels. }
-  else { msg $chan My Spam Protection is ON in %spamchan }
+on owner:TEXT:!srooms:#:{ 
+  if (!%spamchan) { 
+    msg $chan My Spam Protection is NOT ON in any channels. 
+  }
+  else { 
+    msg $chan My Spam Protection is ON in %spamchan 
+  }
 }
 
 on *:TEXT:*:%spamchan: { 
@@ -44,11 +48,11 @@ on *:TEXT:*:%spamchan: {
 	    msg $chan Spam Protection: $nick - Spamming/Advertising is not allowed in this channel. 
 	  }
       if ($($+(%,spam,$nick),2) == 2) { 
-	    kick $chan $nick Spam Protection: Spam/Advertising is not permitted in $chan $+ . 
+	    kick $chan $nick Spam Protection: Spamming/Advertising is not permitted in $chan $+ . 
 	  }
       if ($($+(%,spam,$nick),2) == 3) { 
 	    mode $chan +b $address($nick,2) 
-		kick $chan $nick Spam Protection: Spam/Advertising is not permitted in $chan $+ . 
+		kick $chan $nick Spam Protection: Spamming/Advertising is not permitted in $chan $+ . 
 		unset $+(%,spam,$nick)	  
 	  }
     }
