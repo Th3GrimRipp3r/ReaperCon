@@ -50,13 +50,13 @@ on !*:TEXT:*:%floodchan: {
     if ($($+(%,flood,.,$chan,.,$nick),2) >= 5) {
       inc $+(%,floodd,.,$chan,.,$nick) 
       if ($($+(%,floodd,.,$chan,.,$nick),2) == 2) { 
-	    msg $chan $nick Dont Flood This Room 
+	    msg $chan Flooding Detected: $nick - Flooding is not permitted in this channel.
 	  }
       if ($($+(%,floodd,.,$chan,.,$nick),2) == 5) { 
-	    kick $chan $nick flood Control 1 more time and it's a BAN!! 
+	    kick $chan $nick Flooding Detected: Flooding is not permitted in this channel. Continue flooding and you will be banned.  
 	  }
       if ($($+(%,floodd,.,$chan,.,$nick),2) == 8) { 
-	    ban -ku600 # $nick 2 you were warned not to Flood In This Room.
+	    ban -ku600 # $nick 2 BANNED! Flooding is not permitted in this channel. This ban is not appealable.
 		unset $+(%,floodd,.,$chan,.,$nick) 
 	  }
     }
